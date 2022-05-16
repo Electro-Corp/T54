@@ -1,0 +1,4 @@
+run = "cowsay Welcome to Nix on Replit!"
+
+[nix]
+channel = "stable-21_11"
