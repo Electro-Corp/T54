@@ -43,7 +43,11 @@
 00000000000i[USBCTL] Pluggable USB devices
 00000000000i[USBCTL]   floppy disk cdrom hub printer mouse tablet keypad
 00000000000i[USBCTL]   keyboard
-00000000000i[MEM0  ] allocated memory at 0x7f984b1dd010. after alignment, vector=0x7f984b1de000
+00000000000i[MEM0  ] allocated memory at 0x7f66fa8d3010. after alignment, vector=0x7f66fa8d4000
 00000000000i[MEM0  ] 32.00MB
 00000000000i[MEM0  ] mem block size = 0x00020000, blocks=256
 00000000000p[MEM0  ] >>PANIC<< ROM: couldn't open ROM image file '/usr/share/bochs/BIOS-bochs-latest'.
+00000000000i[DEV   ] will paste characters every 100 iodev timer ticks
+00000000000i[      ] lt_dlhandle is 0x273e3a0
+00000000000i[PLUGIN] loaded plugin libbx_soundoss.so
+00000000000p[SNDCTL] >>PANIC<< Could not open wave output device

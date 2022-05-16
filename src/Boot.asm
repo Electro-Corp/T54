@@ -12,7 +12,7 @@ align 4 ; Align everything after this to a 4 byte boundary, which the boot heade
         dd FLAGS
         dd SUM
 
-CSTACK_SIZE equ 4096 ; This is how big we want our stack to be
+CSTACK_SIZE equ 80000 ; This is how big we want our stack to be
 
 entry:
 mov esp, cstack + CSTACK_SIZE ; The ESP register holds the current position on the stack

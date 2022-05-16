@@ -1,9 +1,12 @@
 nasm -f elf32 src/Boot.asm
 gcc -c src/Main.c -m32  -nostdinc -fno-builtin -fno-stack-protector -nostartfiles  -W
+gcc -c src/csrc/print.c -m32  -nostdinc -fno-builtin -fno-stack-protector -nostartfiles  -W
+gcc -c src/csrc/print.h -m32  -nostdinc -fno-builtin -fno-stack-protector -nostartfiles  -W
+#gcc -c src/Main.c -m32 -fno-builtin -fno-stack-protector -W -nostartfiles -nostdinc
 #-nostdlib
 #-nodefaultlibs
-cp Main.o src/
-ld -T src/link.ld -melf_i386 src/Boot.o src/Main.o -o iso/boot/kernel
+
+ld -T src/link.ld -melf_i386 src/Boot.o Main.o print.o -o iso/boot/kernel
 
 # genisoimage -b /boot/grub/stage2_eltorito -R -boot-load-size 4 -no-emul-boot -boot-info-table -A Replit  iso > os.iso
 mkisofs -R                              \

@@ -1,3 +1,4 @@
+
 ENTRY(entry)                /* the name of the entry label */
 
 SECTIONS {
