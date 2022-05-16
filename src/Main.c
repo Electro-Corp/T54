@@ -1,5 +1,10 @@
 //#include <string.h>
 // 0xB8000 is the address of the vga framebuffer
+#include <stdint.h>
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
 char* fb = (char*) 0xB8000;
 void printchartoscreen(char printo[20]);
 void printchar(char ch[1]);
