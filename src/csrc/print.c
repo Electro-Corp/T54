@@ -1,9 +1,8 @@
-
-void printchartoscreen(char printo[20]){
+void printchartoscreen(char printo[2042],int line){
   char* fb = (char*) 0xB8000;
 
   int x = 0;
-  int y = 0;
+  int y = line;
   //char str[100];//character array
   int totChar;//variable  declaration
   totChar=0;//variable initialization
