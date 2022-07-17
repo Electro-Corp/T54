@@ -1,6 +1,6 @@
 global entry
 section .__mbHeader
- 
+
 align 0x4
 MAGIC equ 0x1BADB002 ; These tell the bootloader that we are bootable
 FLAGS equ 0
@@ -21,10 +21,9 @@ extern main
 call main
 
 jmp entry ; if main returns, just do nothing. there isn't anything else to do here
-extern printchartoscreen
-call printchartoscreen
-section .bss:
 
+section .bss:
+    
 align 16 ; We should align our stack on a 4 byte boundary, im unsure of the consquences of not doing this but im sure you do not want to find out.
 cstack:
 resb CSTACK_SIZE ; resb == "reserve bytes"

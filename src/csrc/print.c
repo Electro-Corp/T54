@@ -1,5 +1,7 @@
-void printchartoscreen(char printo[2042],int line){
-  char* fb = (char*) 0xB8000;
+void printchartoscreen(char printo[200],int line){
+  //char* fb = (char*) 0xB8000;
+  //char* fb = (char*) 0xb8000;
+  static char *const fb = (char*) 0xb8000;
 
   int x = 0;
   int y = line;

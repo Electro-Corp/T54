@@ -1,4 +1,4 @@
-run = "sh compile.sh"
+run = "sh newcompile.sh"
 
 [nix]
 channel = "stable-21_11"

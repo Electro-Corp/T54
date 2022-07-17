@@ -4,6 +4,7 @@
         pkgs.qemu
         pkgs.cdrkit
         pkgs.bochs
+        
         # pkgs.c
     ];
 }
