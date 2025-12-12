@@ -45,7 +45,7 @@ _start:
 .end:
 
 
-; Flush segment registers
+; Flush segment registers and load GDT
 global gdt_flush ; for C
 extern gp ; from C
 gdt_flush:
@@ -59,4 +59,11 @@ gdt_flush:
 	mov ss, ax
 	jmp 0x08:flush2
 flush2:
+	ret
+
+; Load GDT
+global idt_load ; for C
+extern idt_p;
+idt_load:
+	lidt [idt_p]
 	ret

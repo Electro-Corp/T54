@@ -12,3 +12,13 @@ static void* memcpy(const void* aPtr, const void* bPtr, int size){
 		dst[i] = src[i];
 	return dst;
 }
+
+// memset
+// Set memory
+static void* memset(const void* aPtr, char value, int size){
+	unsigned char* dst = (unsigned char*) aPtr;
+	for(int i = 0; i < size; i++){
+		dst[i] = value;
+	}
+	return dst;
+}

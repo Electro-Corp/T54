@@ -13,8 +13,13 @@ void k_main(){
     gdt_install();
     v_terminalWrite("GDT installed.");
 
+    // Load IDT
+    v_terminalWrite("Load IDT...");
+    idt_install();
+    v_terminalWrite("IDT loaded.");
+
     // Continue
-    v_terminalWrite("System is coming up, please wait.");
+    v_terminalWrite("The system is coming up, please wait.");
 
     
 
