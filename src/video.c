@@ -39,10 +39,26 @@ void v_terminalWrite(const char* c){
     for(int i = 0; i < strlen(c); i++){
         v_terminalPushChar(c[i]);
     }
+    // Update the cursor AFTER the whole string has printed
+    v_updateCursor();
+    // Reset to next line
+    currentCol = 0;
+    if(currentRow == HEIGHT) v_terminalScroll();
+    else currentRow++;
 }
 
 void v_terminalScroll(){
-    // 
+    
+}
+
+void v_updateCursor(){
+    // Generate pos
+    uint16_t newPos = currentRow * WIDTH + currentCol;
+    // Update by sending to the hardware
+    io_out(0x3D4, 0x0F);
+    io_out(0x3D5, (uint8_t) (newPos & 0xFF));
+    io_out(0x3D4, 0x0E);
+    io_out(0x3D5, (uint8_t) ((newPos >> 8) & 0xFF));
 }
 
 int strlen(const char* c){

@@ -6,7 +6,8 @@
 
 void k_main(){
     v_initTerminal();
-    v_terminalWrite("T54 is starting...");
+    v_terminalWrite("T54 v0.1");
+    v_terminalWrite("System is coming up, please wait.");
 
     return 0;
 }

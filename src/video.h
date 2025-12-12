@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#include "io.h"
+
 // Constants
 #define WIDTH 80
 #define HEIGHT 25
@@ -59,6 +61,10 @@ void v_terminalWrite(const char* c);
 // v_terminalScroll
 // Scroll the entire terminal
 void v_terminalScroll();
+
+// v_updateCursor
+// Update the blinking cursor to our latest position
+void v_updateCursor();
 
 // strlen
 // Get length of string
