@@ -27,5 +27,4 @@ SECTIONS {
 		*(COMMON)
 		*(.bss)
 	}
-
 }
