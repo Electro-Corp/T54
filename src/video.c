@@ -15,6 +15,8 @@ void v_initTerminal(){
     // Reset position
     currentRow = 0;
     currentCol = 0;
+
+    //
 }
 
 void v_terminalPutChar(const char c, uint8_t color, int y, int x){
@@ -48,7 +50,12 @@ void v_terminalWrite(const char* c){
 }
 
 void v_terminalScroll(){
-    
+    // I *was* gonna just loop and copy
+    // but then I thought, what if I memcpy 
+    // the previous stuff
+    // and then just redraw the last line
+    uint16_t* secondLineStart = &(v_Buffer[2 * WIDTH]);
+    memcpy(secondLineStart, v_Buffer, ((WIDTH * HEIGHT) + HEIGHT) - WIDTH);
 }
 
 void v_updateCursor(){

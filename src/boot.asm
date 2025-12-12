@@ -32,13 +32,10 @@ _start:
 	; Setup stack
 	mov esp, stack_top ; moved the esp to the top of the stack
 
-	; todo: init gdt here
-
 	; jump to our C kernel
 	extern k_main
 	call k_main
 	
-
 	; out of k_main, just loop forever
 	; disable interrupts
 	cli
@@ -47,3 +44,19 @@ _start:
 	jmp .hang
 .end:
 
+
+; Flush segment registers
+global gdt_flush ; for C
+extern gp ; from C
+gdt_flush:
+	cli
+	lgdt [gp] ; load gdt from our pointer
+	mov ax, 0x10 ; offset in gdt for our DATA segment
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax,
+	mov ss, ax
+	jmp 0x08:flush2
+flush2:
+	ret

@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+#include "std/stdlib.h"
 #include "io.h"
 
 // Constants
