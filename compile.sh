@@ -10,6 +10,8 @@ gcc -c src/io.c -o out/io.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 gcc -c src/gdt.c -o out/gdt.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # idt
 gcc -c src/idt.c -o out/idt.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
+# isr
+gcc -c src/isr.c -o out/isr.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # kernel
 gcc -c src/kernel.c -o out/kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 

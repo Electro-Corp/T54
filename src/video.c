@@ -60,12 +60,26 @@ void v_terminalScroll(){
 
 void v_updateCursor(){
     // Generate pos
-    uint16_t newPos = currentRow * WIDTH + currentCol;
+    uint16_t newPos = currentRow * WIDTH + (currentCol - 1);
     // Update by sending to the hardware
     io_out(0x3D4, 0x0F);
     io_out(0x3D5, (uint8_t) (newPos & 0xFF));
     io_out(0x3D4, 0x0E);
     io_out(0x3D5, (uint8_t) ((newPos >> 8) & 0xFF));
+}
+
+void v_kPanicScreen(){
+    currentRow = 0;
+    currentCol = 0;
+    // Set color
+    tColor = VGA_COLOR_WHITE | VGA_COLOR_BLUE << 4;
+    // Draw the background 
+    for(int i = 0; i < (WIDTH * HEIGHT) + HEIGHT; i++){
+        v_terminalPushChar(' ');
+    }
+    // Reset position
+    currentRow = 0;
+    currentCol = 0;
 }
 
 int strlen(const char* c){

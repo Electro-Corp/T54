@@ -29,7 +29,7 @@ extern void idt_load();
 void idt_setGate(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags){
     // Base L and H
     idt[num].base_L = (base & 0xFFFF);
-    idt[num].base_H = ((base >> 24) & 0xFFFF);
+    idt[num].base_H = ((base >> 16) & 0xFFFF);
     // Set 0
     idt[num].zero = 0;
     // Set kernel segment
@@ -48,6 +48,7 @@ void idt_install(){
     memset(&idt, 0 , sizeof(struct idt_entry) * 256);
 
     // Create ISRs
+    isrs_install();
 
     // Point CPU to our IDT
     idt_load();

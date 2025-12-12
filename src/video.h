@@ -67,6 +67,10 @@ void v_terminalScroll();
 // Update the blinking cursor to our latest position
 void v_updateCursor();
 
+// v_kPanicScreen
+// Generate a kernel panic screen 
+void v_kPanicScreen();
+
 // strlen
 // Get length of string
 int strlen(const char* c);

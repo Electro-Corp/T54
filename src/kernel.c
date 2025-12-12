@@ -21,6 +21,9 @@ void k_main(){
     // Continue
     v_terminalWrite("The system is coming up, please wait.");
 
+    extern void div0();
+
+    div0();
     
 
     return 0;
