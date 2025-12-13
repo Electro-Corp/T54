@@ -41,7 +41,7 @@ extern void isr_31();
 // Hold registers so we can read on an exception
 struct regs{
     unsigned int gs, fs, es, ds; // segment registers
-    unsigned int edi, esi, ebp, ebx, edx, ecx, eax; 
+    unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax; 
     unsigned int int_no, err_code;
     unsigned int eip, cs, eflags, useresp, ss; // processor pushes this for us
 };
@@ -107,17 +107,17 @@ unsigned char* isrExceptionMessages[] = {
     "Unknown Interrupt",
     "Coprocessor Fault",
     "Alignment Check",
-    "Machine Check"
+    "Machine Check",
 };
 
 // isrs_faultHandle
 // kernel panic!!!
 void isrs_faultHandle(struct regs* r){
     if(r->int_no < 32){
-        //v_kPanicScreen();
-        v_terminalWrite("Kernel Panic!");
+        v_kPanicScreen();
+        v_terminalWrite("Kernel Panic: ");
         v_terminalWrite(isrExceptionMessages[r->int_no]);
-        v_terminalWrite("System halted.");
+        v_terminalWrite("!\nSystem halted. Restart to continue.");
         asm("hlt");
     }
 }

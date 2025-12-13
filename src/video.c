@@ -15,8 +15,7 @@ void v_initTerminal(){
     // Reset position
     currentRow = 0;
     currentCol = 0;
-
-    //
+    // 
 }
 
 void v_terminalPutChar(const char c, uint8_t color, int y, int x){
@@ -39,14 +38,19 @@ void v_terminalPushChar(const char c){
 
 void v_terminalWrite(const char* c){
     for(int i = 0; i < strlen(c); i++){
-        v_terminalPushChar(c[i]);
+        if(c[i] == '\n'){
+            if(currentRow == HEIGHT) v_terminalScroll();
+            else{
+                currentRow++;
+            }
+            // Reset to next line
+            currentCol = 0;
+        }else{
+            v_terminalPushChar(c[i]);
+            v_updateCursor();
+        }
     }
-    // Update the cursor AFTER the whole string has printed
-    v_updateCursor();
-    // Reset to next line
-    currentCol = 0;
-    if(currentRow == HEIGHT) v_terminalScroll();
-    else currentRow++;
+    
 }
 
 void v_terminalScroll(){
@@ -60,7 +64,7 @@ void v_terminalScroll(){
 
 void v_updateCursor(){
     // Generate pos
-    uint16_t newPos = currentRow * WIDTH + (currentCol - 1);
+    uint16_t newPos = (currentRow - 1) * WIDTH + (currentCol - 1);
     // Update by sending to the hardware
     io_out(0x3D4, 0x0F);
     io_out(0x3D5, (uint8_t) (newPos & 0xFF));
@@ -79,7 +83,7 @@ void v_kPanicScreen(){
     }
     // Reset position
     currentRow = 0;
-    currentCol = 0;
+    currentCol = 0; 
 }
 
 int strlen(const char* c){
