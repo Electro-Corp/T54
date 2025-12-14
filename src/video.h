@@ -65,11 +65,19 @@ void v_terminalScroll();
 
 // v_updateCursor
 // Update the blinking cursor to our latest position
-void v_updateCursor();
+void v_updateCursor(/*int y, int x*/);
 
 // v_kPanicScreen
 // Generate a kernel panic screen 
 void v_kPanicScreen();
+
+// v_setRow
+// Set current draw row
+void v_setRow(int n);
+
+// v_setCol
+// Set current draw col
+void v_setCol(int n);
 
 // strlen
 // Get length of string

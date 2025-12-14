@@ -2,6 +2,8 @@
 nasm -felf32 src/boot.asm -o out/boot.o
 
 # C
+# memory managment
+gcc -c src/memory.c -o out/memory.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # vga text video
 gcc -c src/video.c -o out/video.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # io
@@ -20,4 +22,4 @@ gcc -T linker.ld -Wl,-m,elf_i386 -o iso/boot/kernel.bin -ffreestanding -mno-red-
 
 grub-mkrescue -o t54.iso iso
 
-qemu-system-x86_64 -cdrom t54.iso
+qemu-system-x86_64 -cdrom t54.iso -boot d

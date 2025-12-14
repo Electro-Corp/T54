@@ -115,9 +115,17 @@ unsigned char* isrExceptionMessages[] = {
 void isrs_faultHandle(struct regs* r){
     if(r->int_no < 32){
         v_kPanicScreen();
-        v_terminalWrite("Kernel Panic: ");
+        v_terminalWrite("Kernel Panic:");
         v_terminalWrite(isrExceptionMessages[r->int_no]);
-        v_terminalWrite("!\nSystem halted. Restart to continue.");
+        v_terminalWrite("!\nSystem halted. Restart to continue.\n====== Register Dump: ======\n");
+        // insert dump here. . . .
+        
+        // In the future, depending on the error,
+        // either allow for continued execution or
+        // allow a debugger to connect
+        v_setRow(24);
+        v_setCol(0);
+        v_terminalWrite("No debugger connected.\n");
         asm("hlt");
     }
 }
