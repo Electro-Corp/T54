@@ -1,3 +1,6 @@
+cp iso/boot/kernel.bin ./backup.bin
+rm iso/boot/kernel.bin
+
 # Assembly 
 nasm -felf32 src/boot.asm -o out/boot.o
 

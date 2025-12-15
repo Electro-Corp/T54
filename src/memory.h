@@ -18,11 +18,11 @@ static uint16_t heapExtension = 0;
 
 struct chunkHeader{
     uint16_t start, end;
-    int free;
+    int free, index;
 } __attribute__((packed));
 
-struct chunkHeader freeChunks[256];
-int lastFreeChunk = 0;
+static struct chunkHeader freeChunks[256];
+static int lastFreeChunk = 0;
 
 // malloc
 // Allocate some chunk of memory

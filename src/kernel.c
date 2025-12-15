@@ -47,4 +47,12 @@ void testMalloc(){
     // free them, we're done
     free(test);
     free(test2);
+
+    // Now that we freed some memory.. 
+    // lets try and reallocate and see if we get that 
+    // memory again
+    const char* a3 = "Realloc attempt.\n";
+    char* test3 = (char*)malloc(sizeof(char) * strlen(a3));
+    memcpy(a3, test3, strlen(a3));
+    v_terminalWrite(test3);
 }

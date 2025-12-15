@@ -2,6 +2,8 @@
     T54 
     stdlib.h - memory and other various things
 */
+#ifndef STDLIB_H
+#define STDLIB_H
 
 // memcpy
 // Copy memory from buffer to buffer
@@ -22,3 +24,5 @@ static void* memset(const void* aPtr, char value, int size){
 	}
 	return dst;
 }
+
+#endif
