@@ -8,15 +8,16 @@ void* malloc(size_t size){
         // Extend the heap
         heapExtension += size;
     }
-    // If we do, allocate it
-    void* ptr = HEAP_START + lastAddr + sizeof(struct chunkHeader);
-    lastAddr += size + sizeof(struct chunkHeader);
 
     // Create a chunk header
     struct chunkHeader tmp = {HEAP_START + lastAddr, sizeof(struct chunkHeader) + HEAP_START + lastAddr + size, 0};
     // Copy the chunk header to right before 
-    memcpy(&tmp, HEAP_START + lastAddr, sizeof(struct chunkHeader));
-    
+    memcpy(&tmp, HEAP_START + lastAddr, sizeof(tmp));
+
+    // If we do, allocate it
+    void* ptr = HEAP_START + lastAddr + sizeof(tmp);
+    lastAddr += size + sizeof(tmp);
+
     return ptr;
 }
 
