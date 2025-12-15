@@ -43,4 +43,8 @@ void testMalloc(){
     char* test2 = (char*)malloc(sizeof(char) * strlen(a2));
     memcpy(a2, test2, strlen(a2));
     v_terminalWrite(test2);
+
+    // free them, we're done
+    free(test);
+    free(test2);
 }

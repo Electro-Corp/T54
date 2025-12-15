@@ -22,6 +22,12 @@ void* malloc(size_t size){
 }
 
 void* free(void* ptr){
-    // Read the memory chunk
+    // Read the memory chunk at that location
+    void* chunkPtr = ptr - sizeof(struct chunkHeader);
+    struct chunkHeader h;
+    memcpy(chunkPtr, &h, sizeof(struct chunkHeader));
 
+    // Store it and remember it
+    h.free = 1;
+    freeChunks[lastFreeChunk++] = h;
 }

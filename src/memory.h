@@ -21,7 +21,8 @@ struct chunkHeader{
     int free;
 } __attribute__((packed));
 
-struct chunkHeader chunks[256];
+struct chunkHeader freeChunks[256];
+int lastFreeChunk = 0;
 
 // malloc
 // Allocate some chunk of memory
