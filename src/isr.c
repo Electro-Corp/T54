@@ -114,6 +114,10 @@ unsigned char* isrExceptionMessages[] = {
 // kernel panic!!!
 void isrs_faultHandle(struct regs* r){
     if(r->int_no < 32){
+        // Out to serial should everything else die
+        io_print("Kernel Panic: ");
+        io_print(isrExceptionMessages[r->int_no]);
+        // Video output
         v_kPanicScreen();
         v_terminalWrite("Kernel Panic:");
         v_terminalWrite(isrExceptionMessages[r->int_no]);

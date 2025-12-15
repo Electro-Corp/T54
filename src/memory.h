@@ -5,11 +5,17 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-static char baseAddr, offset = 0;
+#include <stddef.h>
+#include <stdint.h>
+
+#define HEAP_START 0x1000000 // Start at 16mb
+#define HEAP_END 0x4000000 // End at 67 mb
+
+static uint16_t lastAddr;
 
 // malloc
 // Allocate some chunk of memory
-void* malloc(int size);
+void* malloc(size_t size);
 
 // free
 // Free some chunk of memory

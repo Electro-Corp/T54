@@ -25,6 +25,10 @@ void k_main(){
     // Continue
     v_terminalWrite("The system is coming up, please wait.\n");
 
+    testMalloc();
+
+    v_terminalWrite("malloc() test concluded.\n");
+
     return 0;
 }
 
@@ -33,7 +37,8 @@ void testMalloc(){
     char* test = (char*)malloc(sizeof(char) * 16);
     test[0] = 'h';
     test[1] = 'i';
-    test[2] = '\n';
+    test[2] = '!';
+    test[3] = '\n';
     v_terminalWrite(test);
 
     char* test2 = (char*)malloc(sizeof(char) * 256);

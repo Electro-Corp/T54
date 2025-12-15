@@ -22,4 +22,4 @@ gcc -T linker.ld -Wl,-m,elf_i386 -o iso/boot/kernel.bin -ffreestanding -mno-red-
 
 grub-mkrescue -o t54.iso iso
 
-qemu-system-x86_64 -cdrom t54.iso -boot d
+qemu-system-x86_64 -cdrom t54.iso -boot d -serial stdio
