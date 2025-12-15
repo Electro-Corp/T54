@@ -8,10 +8,20 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "std/stdlib.h"
+
 #define HEAP_START 0x1000000 // Start at 16mb
 #define HEAP_END 0x4000000 // End at 67 mb
 
-static uint16_t lastAddr;
+static uint16_t lastAddr = 0;
+static uint16_t heapExtension = 0;
+
+struct chunkHeader{
+    uint16_t start, end;
+    int free;
+} __attribute__((packed));
+
+struct chunkHeader chunks[256];
 
 // malloc
 // Allocate some chunk of memory

@@ -49,7 +49,6 @@ void v_terminalWrite(const char* c){
             v_updateCursor();
         }
     }
-    
 }
 
 void v_terminalScroll(){

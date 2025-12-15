@@ -34,16 +34,13 @@ void k_main(){
 
 void testMalloc(){
     // test malloc
-    char* test = (char*)malloc(sizeof(char) * 16);
-    test[0] = 'h';
-    test[1] = 'i';
-    test[2] = '!';
-    test[3] = '\n';
+    const char* a1 = "Testing malloc, this is string one.\n";
+    const char* a2 = "Continuing the test, this is string two.\n";
+    char* test = (char*)malloc(sizeof(char) * strlen(a1));
+    memcpy(a1, test, strlen(a1));
     v_terminalWrite(test);
 
-    char* test2 = (char*)malloc(sizeof(char) * 256);
-    test2[0] = 'y';
-    test2[1] = 'o';
-    test2[2] = '\n';
+    char* test2 = (char*)malloc(sizeof(char) * strlen(a2));
+    memcpy(a2, test2, strlen(a2));
     v_terminalWrite(test2);
 }
