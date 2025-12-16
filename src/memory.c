@@ -4,10 +4,10 @@ void* malloc(size_t size){
     uint16_t startMemory = HEAP_START + lastAddr;
     // First, check if we have a freed chunk we could
     // repurpose
-    int usingPreviouslyAlloc = 0;
+    int usingPreviouslyAlloc = -1;
     for(int i = 0; i < lastFreeChunk; i++){
         if(freeChunks[i].free == 1 && freeChunks[i].end - freeChunks[i].start >= size){
-            usingPreviouslyAlloc = 1;
+            usingPreviouslyAlloc = i;
             freeChunks[i].free = 0;
             startMemory = freeChunks[i].start;
             // Split this chunk of memory, should we need it
@@ -23,21 +23,25 @@ void* malloc(size_t size){
     }
 
     // Check if we have memory
-    if(lastAddr + size > (HEAP_END + heapExtension) && usingPreviouslyAlloc == 0){
+    if(lastAddr + size > (HEAP_END + heapExtension) && usingPreviouslyAlloc == -1){
         // Check versus the physical memory of the system here
 
         // Extend the heap
         heapExtension += size; // do something with this value in the future
     }
 
-    // Create a chunk header
-    struct chunkHeader tmp = {startMemory, sizeof(struct chunkHeader) + startMemory + size, 0, -1};
-    // Copy the chunk header to right before 
-    memcpy(&tmp, startMemory, sizeof(tmp));
-
+    if(usingPreviouslyAlloc == -1){
+        // Create a chunk header
+        struct chunkHeader tmp = {startMemory, sizeof(struct chunkHeader) + startMemory + size, 0, -1};
+        // Copy the chunk header to right before 
+        memcpy(&tmp, startMemory, sizeof(tmp));
+    }else{
+        // Copy our current chunk
+        memcpy(&freeChunks[usingPreviouslyAlloc], startMemory, sizeof(struct chunkHeader));
+    }
     // If we do, allocate it
-    void* ptr = startMemory + sizeof(tmp);
-    lastAddr += size + sizeof(tmp);
+    void* ptr = startMemory + sizeof(struct chunkHeader);
+    lastAddr += size + sizeof(struct chunkHeader);
 
     return ptr;
 }
