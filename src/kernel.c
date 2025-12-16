@@ -5,6 +5,9 @@
 #include "video.h"
 #include "memory.h"
 
+// Devices
+#include "drivers/cdrom.h"
+
 // Test malloc
 void testMalloc();
 
@@ -24,6 +27,12 @@ void k_main(){
 
     testMalloc();
     v_terminalWrite("malloc() test concluded.\n");
+
+    if(cdrom_detectDrive() == 0){
+        v_terminalWrite("CD-ROM detected.\n");
+    }else{
+        kpanic("No CD-ROM found, unable to mount root FS");
+    }
 
     return 0;
 }

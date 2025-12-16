@@ -28,14 +28,18 @@ unsigned char* exceptionMessages[] = {
     "Machine Check",
 };
 
-void kpanic(int int_no){
+void kpanic_exceptionNumber(int int_no){
+    kpanic(exceptionMessages[int_no]);
+}
+
+void kpanic(const char* message){
     // Out to serial should everything else die
     io_print("Kernel Panic: ");
-    io_print(exceptionMessages[int_no]);
+    io_print(message);
     // Video output
     v_kPanicScreen();
     v_terminalWrite("Kernel Panic: ");
-    v_terminalWrite(exceptionMessages[int_no]);
+    v_terminalWrite(message);
     v_terminalWrite("!\nSystem halted. Restart to continue.\n====== Register Dump: ======\n");
     // insert dump here. . . .
     

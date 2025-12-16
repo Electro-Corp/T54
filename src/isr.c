@@ -92,6 +92,6 @@ void isrs_install(){
 // Handle a fault
 void isrs_faultHandle(struct regs* r){
     if(r->int_no < 32){
-        kpanic(r->int_no);
+        kpanic_exceptionNumber(r->int_no);
     }
 }

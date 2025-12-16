@@ -27,7 +27,7 @@ void* malloc(size_t size){
         // Check versus the physical memory of the system here
 
         // Extend the heap
-        heapExtension += size;
+        heapExtension += size; // do something with this value in the future
     }
 
     // Create a chunk header
