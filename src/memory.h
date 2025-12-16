@@ -11,7 +11,7 @@
 #include "std/stdlib.h"
 
 #define HEAP_START 0x1000000 // Start at 16mb
-#define HEAP_END 0x4000000 // End at 67 mb
+#define HEAP_END 0x4000000 // End at 67 mb, extendable when needed
 
 static uint16_t lastAddr = 0;
 static uint16_t heapExtension = 0;
@@ -21,7 +21,8 @@ struct chunkHeader{
     int free, index;
 } __attribute__((packed));
 
-static struct chunkHeader freeChunks[256];
+static struct chunkHeader freeChunks[256]; // need a way to increase his when needed
+                                           // i have an idea, but i dunno how "proper" it is
 static int lastFreeChunk = 0;
 
 // malloc

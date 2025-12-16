@@ -4,24 +4,26 @@ void* malloc(size_t size){
     uint16_t startMemory = HEAP_START + lastAddr;
     // First, check if we have a freed chunk we could
     // repurpose
+    int usingPreviouslyAlloc = 0;
     for(int i = 0; i < lastFreeChunk; i++){
         if(freeChunks[i].free == 1 && freeChunks[i].end - freeChunks[i].start >= size){
+            usingPreviouslyAlloc = 1;
             freeChunks[i].free = 0;
             startMemory = freeChunks[i].start;
             // Split this chunk of memory, should we need it
             if(freeChunks[i].end - freeChunks[i].start > size){
                 // bigger than we need
-                freeChunks[i].end = startMemory + sizeof(freeChunks[i]) + size;
-
                 struct chunkHeader split = {freeChunks[i].end, freeChunks[i].end + (freeChunks[i].end - freeChunks[i].start - size), 1, lastFreeChunk++};
                 freeChunks[lastFreeChunk] = split;
+                // Resize the original
+                freeChunks[i].end = startMemory + sizeof(freeChunks[i]) + size;
             }
             break;
         }
     }
 
     // Check if we have memory
-    if(lastAddr + size > (HEAP_END + heapExtension)){
+    if(lastAddr + size > (HEAP_END + heapExtension) && usingPreviouslyAlloc == 0){
         // Check versus the physical memory of the system here
 
         // Extend the heap

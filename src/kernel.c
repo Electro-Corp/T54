@@ -5,7 +5,7 @@
 #include "video.h"
 #include "memory.h"
 
-// Test memory
+// Test malloc
 void testMalloc();
 
 void k_main(){
@@ -22,11 +22,7 @@ void k_main(){
     idt_install();
     v_terminalWrite("IDT loaded.\n");
 
-    // Continue
-    v_terminalWrite("The system is coming up, please wait.\n");
-
     testMalloc();
-
     v_terminalWrite("malloc() test concluded.\n");
 
     return 0;
@@ -55,4 +51,5 @@ void testMalloc(){
     char* test3 = (char*)malloc(sizeof(char) * strlen(a3));
     memcpy(a3, test3, strlen(a3));
     v_terminalWrite(test3);
+    free(a3);
 }
