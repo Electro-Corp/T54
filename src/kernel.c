@@ -28,11 +28,15 @@ void k_main(){
     testMalloc();
     v_terminalWrite("malloc() test concluded.\n");
 
-    if(cdrom_detectDrive() == 0){
-        v_terminalWrite("CD-ROM detected.\n");
-    }else{
-        kpanic("No CD-ROM found, unable to mount root FS");
-    }
+    v_terminalWrite("===== Root FS selection =====\n");
+    // Once keyboard input works, detect drives and
+    // have the user select the boot media
+    // until then, just assume CDrom
+    v_terminalWrite("[ X ]     CD-ROM\n");  
+    v_terminalWrite("[   ]     HDD\n");    
+    v_terminalWrite("=============================\n");
+    v_terminalWrite("Loading T54 init program from \"CD-ROM!\"\n");
+
 
     return 0;
 }

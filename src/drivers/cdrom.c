@@ -1,5 +1,6 @@
 #include "cdrom.h"
 
+// This doesn't work on qemu, untested on real hardware
 int cdrom_detectDrive(){
     // To detect an ATAPI drive, we can read a few
     // registers and see if what we get back
@@ -9,10 +10,18 @@ int cdrom_detectDrive(){
     reg1 = io_in(0x1F2);
     reg2 = io_in(0x1F3);
     reg3 = io_in(0x1F4);
-    reg4 = io_in(0x1F5);
+    reg4 = io_in(0x1F5); 
     // Compare the registers
-    if(reg1 == 0x01 && reg2 == 0x01 && reg3 == 0x14 && reg4 == 0xEB){
-        return 0; // We have a drive
+    if(reg1 == 0x01 && reg2 == 0x01){
+        // Check if packet device or not
+        if(reg3 == 0x14 && reg4 == 0xEB){
+            // Packet
+        }else if(reg3 == 0x00 && reg4 == 0x00){
+            // Nah
+        }else{
+            return 1; // no drive
+        }
+        return 0;
     }
     return 1; // no drive
 }

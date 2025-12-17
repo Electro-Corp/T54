@@ -36,6 +36,7 @@ void kpanic(const char* message){
     // Out to serial should everything else die
     io_print("Kernel Panic: ");
     io_print(message);
+    io_print("\n");
     // Video output
     v_kPanicScreen();
     v_terminalWrite("Kernel Panic: ");
