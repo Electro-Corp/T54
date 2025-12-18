@@ -23,7 +23,7 @@ gcc -c src/panic.c -o out/panic.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m
 #
 # drivers
 #
-gcc -c src/drivers/devices.c -o out/devices.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m3
+gcc -c src/drivers/devices.c -o out/devices.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # CD-ROM
 gcc -c src/drivers/cdrom.c -o out/cdrom.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 

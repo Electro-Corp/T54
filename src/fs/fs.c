@@ -2,10 +2,13 @@
 
 // fs_init
 // Initilize the filesystem
-void fs_init(){
+void fs_init(struct StorageDevice* rootDeviceIn){
     // Dynamically allocate the files buffer cuz
     // we will need to resize at some point
     files = malloc(sizeof(struct File) * 512);
+
+    // Root FS
+    rootDevice = rootDeviceIn;
 }
 
 // fs_shutdown

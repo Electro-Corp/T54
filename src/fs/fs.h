@@ -34,9 +34,12 @@ struct File{
 // File buffer
 static struct File* files;
 
+// Root device
+static struct StorageDevice* rootDevice;
+
 // fs_init
 // Initilize the filesystem
-void fs_init();
+void fs_init(struct StorageDevice* rootDeviceIn);
 
 // fs_shutdown
 // Shutdown the filesystem and sync filesystems

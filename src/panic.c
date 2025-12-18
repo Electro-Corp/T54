@@ -6,7 +6,7 @@
 #include "video.h"
 
 // List of exception names
-unsigned char* exceptionMessages[] = {
+char* exceptionMessages[] = {
     "Division by Zero",
     "Debug",
     "Non maskable interrupt",

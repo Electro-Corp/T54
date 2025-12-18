@@ -13,12 +13,25 @@ So what follows is a "design" document of sorts, explaining how things work and 
 3. Load the Interrupt Descriptor Table
 4. Setup catching exceptions for kernel panics
 5. Select where the root filesystem is (HDD or CDROM)
-6. Initilize the filesystem
-7. Load /bin/init from that device ("/bin/init? that's a POSIX thing!!")
+6. Initilize devices
+7. Initilize the filesystem
+8. Load /bin/init from that device ("/bin/init? that's a POSIX thing!!")
+
+## Hardware
+The kernel abstracts hardware through `drivers/devices.h`. Structs with function pointers are used for each hardware device, for example Storage Devices (codeblock may not always be up to date, check `devices.h`):
+```c
+struct StorageDevice{
+    enum StorageType type;
+    // Initilize the device
+    void (*initDevice)();
+    // Read from the device
+    void (*readData)(uint32_t location, uint16_t* buffer, uint32_t count);
+};
+```
 
 ## Filesystem
 The kernel interacts with the filesystem through an abstracted system (`src/fs/fs.h`). <br>
-This abstracts the implementation of specfic filesystems from the kernel (impls can be found in `src/fs/systems`) through a faux-OOP struct, like so (codeblock may not alwasy be up to date, check `fs.h` for latest):
+This abstracts the implementation of specfic filesystems from the kernel (impls can be found in `src/fs/systems`) through a faux-OOP struct, like so (codeblock may not always be up to date, check `fs.h` for latest):
 ```c
 struct FilesystemImpl{
     // Name of system

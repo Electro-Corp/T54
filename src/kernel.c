@@ -27,9 +27,6 @@ void k_main(){
     idt_install();
     v_terminalWrite("IDT loaded.\n");
 
-    //testMalloc();
-    //v_terminalWrite("malloc() test concluded.\n");
-
     dev_initStorageDevices();
 
     v_terminalWrite("===== Root FS selection =====\n");
@@ -41,7 +38,7 @@ void k_main(){
     v_terminalWrite("=============================\n");
     v_terminalWrite("Loading T54 init program from \"CD-ROM\"\n");
 
-    fs_init();
+    fs_init(dev_getStorageDeviceWithIndex(0));
 
     return 0;
 }

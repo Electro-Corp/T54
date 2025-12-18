@@ -1,5 +1,16 @@
 #include "cdrom.h"
 
+// cdrom_initDevice
+// Return a StorageDevice for devices.h
+struct StorageDevice cdrom_initDevice(){
+    struct StorageDevice this;
+    
+    this.type = CD_ROM;
+    this.readData = &cdrom_readData;
+
+    return this;
+}
+
 // cdrom_detectDrive
 // Is there a drive present
 // This doesn't work on qemu, untested on real hardware
@@ -27,3 +38,16 @@ int cdrom_detectDrive(){
     }
     return 1; // no drive
 }
+
+// cdrom_readData
+// Read some data from the cd-drive into the buffer
+void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors){
+    cdrom_readInternal(PORT, 0, lba, sectors, buffer);
+}
+
+// cdrom_readInternal
+// Internal read with more params
+void cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors, uint16_t* buffer){
+
+}
+

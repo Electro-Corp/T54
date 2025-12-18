@@ -3,7 +3,9 @@
 // dev_initStorageDevices
 // Load all Storage Devices connected to the machine
 void dev_initStorageDevices(){
-
+    if(cdrom_detectDrive() == 0){
+        storageDevices[storageDeviceCount++] = cdrom_initDevice();
+    }
 }
 
 // dev_getStorageDeviceWithIndex

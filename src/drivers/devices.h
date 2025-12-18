@@ -9,15 +9,31 @@
 
 #include "cdrom.h"
 
+//
+// Device declerations
+//
+
+enum StorageType{
+    HARD_DRIVE = 0,
+    CD_ROM = 1,
+    USB = 2
+};
+
 struct StorageDevice{
+    enum StorageType type;
     // Initilize the device
     void (*initDevice)();
     // Read from the device
-    void (*readData)(uint16_t location, void* buffer, int count);
+    void (*readData)(uint32_t location, uint16_t* buffer, uint32_t count);
 };
 
+//
+// Storage
+//
+
 // 16 Storage Devices
-struct StorageDevice storageDevices[16];
+static struct StorageDevice storageDevices[16]; 
+static int storageDeviceCount;
 
 // dev_initStorageDevices
 // Load all Storage Devices connected to the machine
