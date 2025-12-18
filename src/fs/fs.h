@@ -5,6 +5,9 @@
 #ifndef FS_H
 #define FS_H
 
+#include "../memory.h"
+#include "../drivers/devices.h"
+
 struct FilesystemImpl{
     // Name of system
     const char fsName[32];
@@ -35,6 +38,10 @@ static struct File* files;
 // Initilize the filesystem
 void fs_init();
 
+// fs_shutdown
+// Shutdown the filesystem and sync filesystems
+void fs_shutdown();
+
 // These are functions that the kernel can call,
 // with no need to worry about the backend filesystem
 
@@ -57,7 +64,11 @@ void fs_closeFile(int handle);
 // These are functions that implementations can call
 
 // fs_generateFileHandle
-// Generate a new file
-struct File fs_generateFileHandle(const char* fileName);
+// Get HANDLE for a new file
+int fs_generateFileHandle(const char* fileName);
+
+// fs_generateFileHandle
+// Generate a new file, and store it in our data
+struct File fs_generateFileStruct(const char* fileName);
 
 #endif

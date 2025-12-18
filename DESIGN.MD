@@ -13,7 +13,8 @@ So what follows is a "design" document of sorts, explaining how things work and 
 3. Load the Interrupt Descriptor Table
 4. Setup catching exceptions for kernel panics
 5. Select where the root filesystem is (HDD or CDROM)
-6. Load /bin/init from that device ("/bin/init? that's a POSIX thing!!")
+6. Initilize the filesystem
+7. Load /bin/init from that device ("/bin/init? that's a POSIX thing!!")
 
 ## Filesystem
 The kernel interacts with the filesystem through an abstracted system (`src/fs/fs.h`). <br>
@@ -36,8 +37,12 @@ struct FilesystemImpl{
 ```
 These function pointers act like virtual functions, allowing each filesystem to have their own implementation. 
 
-### Handles
-To generate a handle for a file, each implementation calls a function from within `fs.h`. 
+### Files
+To generate a handle for a file, each implementation calls a function from within `fs.h`:
+```c
+int fs_generateFileHandle(const char* fileName);
+```
+This function calls an intenral Filesystem function that generates a handle and stores it for itself. 
 
 ## /bin/init
 /bin/init ~~is~~ *will be* an ELF executable that preforms most start-up tasks. One of these is to start up a shell for the user to interact with.

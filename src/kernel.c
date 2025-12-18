@@ -5,6 +5,7 @@
 #include "video.h"
 #include "memory.h"
 #include "fs/fs.h"
+#include "drivers/devices.h"
 
 // Devices
 #include "drivers/cdrom.h"
@@ -26,8 +27,10 @@ void k_main(){
     idt_install();
     v_terminalWrite("IDT loaded.\n");
 
-    testMalloc();
-    v_terminalWrite("malloc() test concluded.\n");
+    //testMalloc();
+    //v_terminalWrite("malloc() test concluded.\n");
+
+    dev_initStorageDevices();
 
     v_terminalWrite("===== Root FS selection =====\n");
     // Once keyboard input works, detect drives and
