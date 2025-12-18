@@ -1,5 +1,7 @@
 #include "video.h"
 
+// v_initTerminal 
+// Init terminal background
 void v_initTerminal(){
     // We initilize the terminal for the first time
     // Init video memory
@@ -17,10 +19,14 @@ void v_initTerminal(){
     currentCol = 0;
 }
 
+// v_terminalPutChar
+// Write a character to the terminal
 void v_terminalPutChar(const char c, uint8_t color, int y, int x){
     v_Buffer[y * WIDTH + x] = (uint16_t)c | (uint16_t)color << 8;
 }
 
+// v_terminalPushChar
+// Push a character to the terminal, whilst managing position automatically
 void v_terminalPushChar(const char c){
     v_terminalPutChar(c, tColor, currentRow, currentCol);
     // Manage row and col
@@ -35,6 +41,8 @@ void v_terminalPushChar(const char c){
     else currentCol++;
 }
 
+// v_terminalWrite
+// Write a string to the terminal
 void v_terminalWrite(const char* c){
     for(int i = 0; i < strlen(c) - 1; i++){
         if(c[i] == '\n'){
@@ -51,6 +59,8 @@ void v_terminalWrite(const char* c){
     }
 }
 
+// v_terminalScroll
+// Scroll the entire terminal
 void v_terminalScroll(){
     // I *was* gonna just loop and copy
     // but then I thought, what if I memcpy 
@@ -60,6 +70,8 @@ void v_terminalScroll(){
     memcpy(secondLineStart, v_Buffer, ((WIDTH * HEIGHT) + HEIGHT) - WIDTH);
 }
 
+// v_updateCursor
+// Update the blinking cursor to our latest position
 void v_updateCursor(){
     // Generate pos
     uint16_t newPos = (currentRow) * WIDTH + (currentCol);
@@ -70,6 +82,8 @@ void v_updateCursor(){
     io_out(0x3D5, (uint8_t) ((newPos >> 8) & 0xFF));
 }
 
+// v_kPanicScreen
+// Generate a kernel panic screen
 void v_kPanicScreen(){
     currentRow = 0;
     currentCol = 0;
@@ -84,14 +98,20 @@ void v_kPanicScreen(){
     currentCol = 0; 
 }
 
+// v_setRow
+// Set current draw row
 void v_setRow(int n){
     currentRow = n;
 }
 
+// v_setCol
+// Set current draw col
 void v_setCol(int n){
     currentCol = n;
 }
 
+// strlen
+// Get length of string
 int strlen(const char* c){
     int i = 0;
     while(c[i++]){}

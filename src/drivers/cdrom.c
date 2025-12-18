@@ -1,5 +1,7 @@
 #include "cdrom.h"
 
+// cdrom_detectDrive
+// Is there a drive present
 // This doesn't work on qemu, untested on real hardware
 int cdrom_detectDrive(){
     // To detect an ATAPI drive, we can read a few

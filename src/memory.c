@@ -1,5 +1,7 @@
 #include "memory.h"
 
+// malloc
+// Allocate some chunk of memory
 void* malloc(size_t size){
     uint16_t startMemory = HEAP_START + lastAddr;
     // First, check if we have a freed chunk we could
@@ -46,6 +48,8 @@ void* malloc(size_t size){
     return ptr;
 }
 
+// free
+// Free some chunk of memory
 void* free(void* ptr){
     // Read the memory chunk at that location
     void* chunkPtr = ptr - sizeof(struct chunkHeader);

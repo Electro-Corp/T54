@@ -14,11 +14,26 @@ struct FilesystemImpl{
     // things, such as opening, closing,
     // reading, writing files.
 
-    // Returns a handle... but what handle?
+    // Returns a handle. 
     int (*openFile)(const char* name);
-    
-    void (*readFile)(/*Handle.. but what handle?*/);
+    // Reads a file
+    void (*readFile)(int handle, void* buffer, int n);
+    // Writes a file
+    void (*writeFile)(int handle, void* buffer, int n);
 };
+
+// File
+struct File{
+    int handle; // Very important
+    const char* fileName;
+};
+
+// File buffer
+static struct File* files;
+
+// fs_init
+// Initilize the filesystem
+void fs_init();
 
 // These are functions that the kernel can call,
 // with no need to worry about the backend filesystem
@@ -38,5 +53,11 @@ void fs_writeFile(int handle, void* buffer, int n);
 // fs_closeFile
 // Close a file and free its handle
 void fs_closeFile(int handle);
+
+// These are functions that implementations can call
+
+// fs_generateFileHandle
+// Generate a new file
+struct File fs_generateFileHandle(const char* fileName);
 
 #endif

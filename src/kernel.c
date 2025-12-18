@@ -4,6 +4,7 @@
 */
 #include "video.h"
 #include "memory.h"
+#include "fs/fs.h"
 
 // Devices
 #include "drivers/cdrom.h"
@@ -35,8 +36,9 @@ void k_main(){
     v_terminalWrite("[ X ]     CD-ROM\n");  
     v_terminalWrite("[   ]     HDD\n");    
     v_terminalWrite("=============================\n");
-    v_terminalWrite("Loading T54 init program from \"CD-ROM!\"\n");
+    v_terminalWrite("Loading T54 init program from \"CD-ROM\"\n");
 
+    fs_init();
 
     return 0;
 }
