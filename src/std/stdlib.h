@@ -7,9 +7,9 @@
 
 // memcpy
 // Copy memory from buffer to buffer
-static void* memcpy(const void* aPtr, const void* bPtr, int size){
-    unsigned char* dst = (unsigned char*) bPtr;
-	const unsigned char* src = (const unsigned char*) aPtr;
+static void* memcpy(const void* srcPtr, const void* dstPtr, int size){
+    unsigned char* dst = (unsigned char*) dstPtr;
+	const unsigned char* src = (const unsigned char*) srcPtr;
 	for (int i = 0; i < size; i++)
 		dst[i] = src[i];
 	return dst;

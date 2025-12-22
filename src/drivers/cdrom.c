@@ -12,31 +12,45 @@ struct StorageDevice cdrom_initDevice(){
 }
 
 // cdrom_detectDrive
-// Is there a drive present
-// This doesn't work on qemu, untested on real hardware
+// Get drive data
 int cdrom_detectDrive(){
-    // To detect an ATAPI drive, we can read a few
-    // registers and see if what we get back
-    // We're only (currently) interested in packet devices
-    unsigned char reg1, reg2, reg3, reg4;
-    // Read the registers
-    reg1 = io_in(0x1F2);
-    reg2 = io_in(0x1F3);
-    reg3 = io_in(0x1F4);
-    reg4 = io_in(0x1F5); 
-    // Compare the registers
-    if(reg1 == 0x01 && reg2 == 0x01){
-        // Check if packet device or not
-        if(reg3 == 0x14 && reg4 == 0xEB){
-            // Packet
-        }else if(reg3 == 0x00 && reg4 == 0x00){
-            // Nah
-        }else{
-            return 1; // no drive
-        }
-        return 0;
+    // Select master
+    io_out(PORT + DRIVE_SELECT, 0xA0);
+    // Set stuff to 0
+    io_out(PORT + SECTOR_COUNT, 0);
+    io_out(PORT + LBA_LOW, 0);
+    io_out(PORT + LBA_MID, 0);
+    io_out(PORT + LBA_HIGH, 0);
+    // Send identify
+    io_out(PORT + COMMAND_REG, INDENTIFY);
+    // Read status
+    unsigned char exists = io_in(PORT + COMMAND_REG);
+    if(exists == 0x00) return -1;
+
+    // Block until we can actually get data
+    while(io_in(PORT + COMMAND_REG) & (1 << 7) != 0x00);
+
+    // Check if we're actually ATA
+    // if(io_in(PORT + LBA_HIGH) != 0 || io_in(PORT + LBA_MID) != 0){
+    //     // Not ATA, quit
+    //     return -1;
+    // }
+
+    // Wait ... (again)
+    while(io_in(PORT + COMMAND_REG) & (1 << 0) != 0x00);
+
+    uint16_t idnetify[256];
+    io_insw(PORT, idnetify, 256);
+
+    char model[41];
+    for (int i = 0; i < 20; i++) {
+        model[i * 2] = identify[27 + i] >> 8;
+        model[i * 2 + 1] = identify[27 + i] & 0xFF;
     }
-    return 1; // no drive
+    model[40] = '\0';
+    v_terminalWrite(model);
+
+    return 0;
 }
 
 // cdrom_readData

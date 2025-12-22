@@ -15,7 +15,9 @@ void testMalloc();
 
 void k_main(){
     v_initTerminal();
-    v_terminalWrite("T54 v0.1\n");    
+    v_terminalWrite("T54 Kernel Version 0.1\n");
+    v_terminalWrite("(c) 2025 Electro-Corp, All Rights Reserved\n");
+    v_terminalWrite("------------------------------------------\n");
     
     // Load GDT
     v_terminalWrite("Loading GDT...");
@@ -23,20 +25,22 @@ void k_main(){
     v_terminalWrite("GDT installed.\n");
 
     // Load IDT
-    v_terminalWrite("Load IDT...");
+    v_terminalWrite("Loading IDT...");
     idt_install();
     v_terminalWrite("IDT loaded.\n");
 
     dev_initStorageDevices();
 
+    v_terminalWrite("------------------------------------------\n");
+
     v_terminalWrite("===== Root FS selection =====\n");
     // Once keyboard input works, detect drives and
     // have the user select the boot media
     // until then, just assume CDrom
-    v_terminalWrite("[ X ]     CD-ROM\n");  
-    v_terminalWrite("[   ]     HDD\n");    
+    v_terminalWrite("[ X ]      CD-ROM\n");  
+    v_terminalWrite("[   ]      HDD\n");    
     v_terminalWrite("=============================\n");
-    v_terminalWrite("Loading T54 init program from \"CD-ROM\"\n");
+    v_terminalWrite("Loading T54 init program from \"CD-ROM\"...\n");
 
     fs_init(dev_getStorageDeviceWithIndex(0));
 

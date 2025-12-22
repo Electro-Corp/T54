@@ -10,7 +10,20 @@
 #include "../io.h"
 #include "devices.h"
 
+// Base
 #define PORT 0x1F0
+// Offset registers
+#define ERROR 1
+#define SECTOR_COUNT 2
+#define LBA_LOW 3
+#define LBA_MID 4
+#define LBA_HIGH 5
+#define DRIVE_SELECT 6
+#define COMMAND_REG 7
+
+#define INDENTIFY 0xA1
+#define READ 0xA8
+#define WRITE 0xAA
 
 // cdrom_initDevice
 // Return a StorageDevice for devices.h
@@ -25,8 +38,8 @@ int cdrom_detectDrive();
 void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors);
 
 
-// internal
-//         internal
+// internal func
+//   func  internal
 
 // cdrom_readInternal
 // Internal read with more params
