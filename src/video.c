@@ -110,10 +110,3 @@ void v_setCol(int n){
     currentCol = n;
 }
 
-// strlen
-// Get length of string
-int strlen(const char* c){
-    int i = 0;
-    while(c[i++]){}
-    return i;
-}

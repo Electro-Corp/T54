@@ -23,6 +23,8 @@ enum StorageType{
 
 struct StorageDevice{
     enum StorageType type;
+    // Name
+    char name[64];
     // Initilize the device
     void (*initDevice)();
     // Read from the device
@@ -33,9 +35,9 @@ struct StorageDevice{
 // Storage
 //
 
-// 16 Storage Devices
-static struct StorageDevice storageDevices[16]; 
-static int storageDeviceCount;
+// 16 Storage Devices, its enough for everybody!
+static struct StorageDevice storageDevices[16];
+static int storageDeviceCount = 0;
 
 // dev_initStorageDevices
 // Load all Storage Devices connected to the machine

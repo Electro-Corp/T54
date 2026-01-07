@@ -5,6 +5,8 @@
 #ifndef IO_H
 #define IO_H
 
+#include "std/string.h"
+
 #include <stdint.h>
 
 #define COM1 0x3F8

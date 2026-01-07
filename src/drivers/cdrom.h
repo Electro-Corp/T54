@@ -8,6 +8,7 @@
 #include <stddef.h>
 
 #include "../io.h"
+#include "../std/stdlib.h"
 #include "devices.h"
 
 // Base
@@ -25,6 +26,8 @@
 #define READ 0xA8
 #define WRITE 0xAA
 
+static char cdromDeviceName[64];
+
 // cdrom_initDevice
 // Return a StorageDevice for devices.h
 struct StorageDevice cdrom_initDevice();
@@ -38,7 +41,7 @@ int cdrom_detectDrive();
 void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors);
 
 
-// internal func
+// internal func   
 //   func  internal
 
 // cdrom_readInternal

@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include "std/stdlib.h"
+#include "std/string.h"
 #include "io.h"
 
 // Constants
@@ -78,9 +79,4 @@ void v_setRow(int n);
 // v_setCol
 // Set current draw col
 void v_setCol(int n);
-
-// strlen
-// Get length of string
-int strlen(const char* c);
-
 #endif
