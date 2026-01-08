@@ -6,9 +6,9 @@ void dev_initStorageDevices(){
     v_terminalWrite("[DeviceManager] Detect CD-ROM drives...\n");
     if(cdrom_detectDrive() == 0){
         // Print out data
-        storageDevices[storageDeviceCount++] = cdrom_initDevice();
+        storageDevices[++storageDeviceCount] = cdrom_initDevice();
         v_terminalWrite("[DeviceManager] CD-ROM drive found: ");
-        v_terminalWrite(storageDevices[storageDeviceCount - 1].name);
+        v_terminalWrite(storageDevices[storageDeviceCount].name);
         v_terminalWrite("\n");
     }else{
         v_terminalWrite("[DeviceManager] CD-ROM not found or not supported.\n");

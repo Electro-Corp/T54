@@ -16,22 +16,22 @@ void testMalloc();
 void k_main(){
     v_initTerminal();
     v_terminalWrite("T54 Kernel Version 0.1\n");
-    v_terminalWrite("(c) 2025 Electro-Corp, All Rights Reserved\n");
-    v_terminalWrite("------------------------------------------\n");
+    v_terminalWrite("(c) 2025-2026 Electro-Corp, All Rights Reserved\n");
+    v_terminalWrite("-----------------------------------------------\n");
     
     // Load GDT
-    v_terminalWrite("Loading GDT...");
+    v_terminalWrite("[Kernel] Loading GDT...");
     gdt_install();
     v_terminalWrite("GDT installed.\n");
 
     // Load IDT
-    v_terminalWrite("Loading IDT...");
+    v_terminalWrite("[Kernel] Loading IDT...");
     idt_install();
     v_terminalWrite("IDT loaded.\n");
 
     dev_initStorageDevices();
 
-    v_terminalWrite("------------------------------------------\n");
+    v_terminalWrite("-----------------------------------------------\n");
 
     v_terminalWrite("===== Root FS selection =====\n");
     // Once keyboard input works, detect drives and
@@ -40,7 +40,7 @@ void k_main(){
     v_terminalWrite("[ X ]      CD-ROM\n");  
     v_terminalWrite("[   ]      HDD\n");    
     v_terminalWrite("=============================\n");
-    v_terminalWrite("Loading T54 init program from \"CD-ROM\"...\n");
+    v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
 
     fs_init(dev_getStorageDeviceWithIndex(0));
 

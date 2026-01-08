@@ -21,6 +21,7 @@ enum StorageType{
     USB = 2
 };
 
+// Generic Storage Device
 struct StorageDevice{
     enum StorageType type;
     // Name
@@ -37,7 +38,7 @@ struct StorageDevice{
 
 // 16 Storage Devices, its enough for everybody!
 static struct StorageDevice storageDevices[16];
-static int storageDeviceCount = 0;
+static int storageDeviceCount = -1;
 
 // dev_initStorageDevices
 // Load all Storage Devices connected to the machine

@@ -10,7 +10,7 @@
 
 struct FilesystemImpl{
     // Name of system
-    const char fsName[32];
+    char fsName[32];
     // Read-only or no
     int readOnly;
     // Function pointers for specfic 
@@ -36,6 +36,8 @@ static struct File* files;
 
 // Root device
 static struct StorageDevice* rootDevice;
+// Root FS
+static struct FilesystemImpl rootFS;
 
 // fs_init
 // Initilize the filesystem

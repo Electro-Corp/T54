@@ -42,13 +42,13 @@ int cdrom_detectDrive(){
     // Wait ... (again)
     while(io_in(PORT + COMMAND_REG) & (1 << 0) != 0x00);
 
-    uint16_t idnetify[256];
-    io_insw(PORT, idnetify, 256);
+    uint16_t identify[256];
+    io_insw(PORT, identify, 256);
 
     // Get the model name
     for (int i = 0; i < 20; i++) {
-        cdromDeviceName[i * 2] = idnetify[27 + i] >> 8;
-        cdromDeviceName[i * 2 + 1] = idnetify[27 + i] & 0xFF;
+        cdromDeviceName[i * 2] = identify[27 + i] >> 8;
+        cdromDeviceName[i * 2 + 1] = identify[27 + i] & 0xFF;
     }
     cdromDeviceName[40] = '\0';
 
@@ -64,6 +64,6 @@ void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors){
 // cdrom_readInternal
 // Internal read with more params
 void cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors, uint16_t* buffer){
-
+    
 }
 

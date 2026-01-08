@@ -31,6 +31,8 @@ gcc -c src/drivers/cdrom.c -o out/cdrom.o -std=gnu99 -ffreestanding -O2 -Wall -W
 # fs
 #
 gcc -c src/fs/fs.c -o out/fs.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
+# ISO9660
+gcc -c src/fs/systems/iso9660.c -o out/iso9660.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 
 # kernel
 gcc -c src/kernel.c -o out/kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32

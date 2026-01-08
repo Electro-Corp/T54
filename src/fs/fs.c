@@ -1,14 +1,31 @@
 #include "fs.h"
 
+// Include filesystems
+#include "systems/iso9660.h"
+
 // fs_init
 // Initilize the filesystem
 void fs_init(struct StorageDevice* rootDeviceIn){
     // Dynamically allocate the files buffer cuz
     // we will need to resize at some point
     files = malloc(sizeof(struct File) * 512);
-
     // Root FS
     rootDevice = rootDeviceIn;
+
+    switch(rootDevice->type){
+        case CD_ROM:
+            // ISO9660
+            rootFS = iso9660_initFS();
+            break;
+        default:
+            // Nothing...
+            kpanic("Failed to mount root FS!");
+            break;
+    }
+
+    v_terminalWrite("[Filesystem] Chose ");
+    v_terminalWrite(rootFS.fsName);
+    v_terminalWrite(" as the root filesystem.\n");
 }
 
 // fs_shutdown
