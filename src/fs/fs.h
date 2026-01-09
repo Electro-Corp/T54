@@ -17,6 +17,8 @@ struct FilesystemImpl{
     // things, such as opening, closing,
     // reading, writing files.
 
+    // Initilize the filesystem
+    void (*initFilesystem)(struct StorageDevice* device);
     // Returns a handle. 
     int (*openFile)(const char* name);
     // Reads a file

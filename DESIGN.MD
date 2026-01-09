@@ -26,6 +26,7 @@ struct StorageDevice{
     void (*initDevice)();
     // Read from the device
     void (*readData)(uint32_t location, uint16_t* buffer, uint32_t count);
+    // ...
 };
 ```
 
@@ -58,4 +59,4 @@ int fs_generateFileHandle(const char* fileName);
 This function calls an intenral Filesystem function that generates a handle and stores it for itself. 
 
 ## /bin/init
-/bin/init ~~is~~ *will be* an ELF executable that preforms most start-up tasks. One of these is to start up a shell for the user to interact with.
+/bin/init ~~is~~ *will be* an ELF executable that preforms most start-up tasks. One of these is to start up a shell (/bin/shell) for the user to interact with.

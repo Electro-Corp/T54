@@ -29,7 +29,7 @@ struct StorageDevice{
     // Initilize the device
     void (*initDevice)();
     // Read from the device
-    void (*readData)(uint32_t location, uint16_t* buffer, uint32_t count);
+    int (*readData)(uint32_t location, uint16_t* buffer, uint32_t count);
 };
 
 //

@@ -15,7 +15,7 @@ void fs_init(struct StorageDevice* rootDeviceIn){
     switch(rootDevice->type){
         case CD_ROM:
             // ISO9660
-            rootFS = iso9660_initFS();
+            rootFS = iso9660_getFSImpl();
             break;
         default:
             // Nothing...
@@ -23,9 +23,11 @@ void fs_init(struct StorageDevice* rootDeviceIn){
             break;
     }
 
-    v_terminalWrite("[Filesystem] Chose ");
+    v_terminalWrite("[Filesystem] Initlizing ");
     v_terminalWrite(rootFS.fsName);
-    v_terminalWrite(" as the root filesystem.\n");
+    v_terminalWrite(" as the root filesystem...\n");
+
+    rootFS.initFilesystem(rootDevice);
 }
 
 // fs_shutdown
@@ -33,7 +35,8 @@ void fs_init(struct StorageDevice* rootDeviceIn){
 void fs_shutdown(){
     // Do other stuff
 
-    // Clear our files buffer (is this needed? idk... but i can flex my memory stuff)
+    // Clear our files buffer 
+    // (is this needed since the OS is exiting at this point? idk... but i can flex my memory stuff)
     free(files);
 }
 
@@ -41,7 +44,7 @@ void fs_shutdown(){
 // Open a file and get its handle
 int fs_openFile(const char* name){
     // temp, in the future call a function
-    // within a specfic implementation 
+    // within a specfic implementation    
     return -1;
 }
 

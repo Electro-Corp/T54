@@ -36,7 +36,7 @@ void k_main(){
     v_terminalWrite("===== Root FS selection =====\n");
     // Once keyboard input works, detect drives and
     // have the user select the boot media
-    // until then, just assume CDrom
+    // until then, just assume CD-ROM
     v_terminalWrite("[ X ]      CD-ROM\n");  
     v_terminalWrite("[   ]      HDD\n");    
     v_terminalWrite("=============================\n");

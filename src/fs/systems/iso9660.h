@@ -7,9 +7,16 @@
 
 #include "../fs.h"
 
-// iso9660_initFS
+// Device to read from
+static struct StorageDevice* cdrom;
+
+// iso9660_getFSImpl
 // Return a FilesystemImpl
-struct FilesystemImpl iso9660_initFS();
+struct FilesystemImpl iso9660_getFSImpl();
+
+// iso9660_initFS
+// Initilize the filesystem
+void iso9660_initFS(struct StorageDevice* device);
 
 // iso9660_openFile
 // Open a file oon the system

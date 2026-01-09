@@ -85,17 +85,17 @@ void v_updateCursor(){
 // v_kPanicScreen
 // Generate a kernel panic screen
 void v_kPanicScreen(){
-    currentRow = 0;
-    currentCol = 0;
+    //currentRow = 0;
+    //currentCol = 0;
     // Set color
     tColor = VGA_COLOR_WHITE | VGA_COLOR_BLUE << 4;
     // Draw the background 
-    for(int i = 0; i < (WIDTH * HEIGHT) + HEIGHT; i++){
-        v_terminalPushChar(' ');
-    }
+    //for(int i = 0; i < (WIDTH * HEIGHT) + HEIGHT; i++){
+    //    v_terminalPushChar(' ');
+    //}
     // Reset position
-    currentRow = 0;
-    currentCol = 0; 
+    //currentRow = 0;
+    //currentCol = 0; 
 }
 
 // v_setRow

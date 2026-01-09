@@ -21,6 +21,8 @@
 #define LBA_HIGH 5
 #define DRIVE_SELECT 6
 #define COMMAND_REG 7
+// Control reg
+#define CONTROL 0x206
 
 #define INDENTIFY 0xA1
 #define READ 0xA8
@@ -47,5 +49,9 @@ void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors);
 // cdrom_readInternal
 // Internal read with more params
 void cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors, uint16_t* buffer);
+
+// cdrom_ataWait
+// Wait 400 ns
+void cdrom_ataWait(const uint8_t port);
 
 #endif
