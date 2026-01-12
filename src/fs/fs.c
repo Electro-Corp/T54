@@ -34,6 +34,7 @@ void fs_init(struct StorageDevice* rootDeviceIn){
 // Shutdown the filesystem and sync filesystems
 void fs_shutdown(){
     // Do other stuff
+    rootFS.closeFilesystem();
 
     // Clear our files buffer 
     // (is this needed since the OS is exiting at this point? idk... but i can flex my memory stuff)
