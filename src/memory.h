@@ -34,4 +34,8 @@ void* malloc(size_t size);
 // Free some chunk of memory
 void* free(void* ptr);
 
+// memory_GetAllocatedChunks
+// Get current amount of allocated chunks
+int memory_GetAllocatedChunks();
+
 #endif

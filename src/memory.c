@@ -67,3 +67,9 @@ void* free(void* ptr){
         freeChunks[lastFreeChunk] = h;
     }
 }
+
+// memory_GetAllocatedChunks
+// Get current amount of allocated chunks
+int memory_GetAllocatedChunks(){
+   return 0;
+}

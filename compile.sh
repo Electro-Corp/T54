@@ -40,6 +40,17 @@ gcc -c src/kernel.c -o out/kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra 
 # Final Link
 gcc -T linker.ld -Wl,-m,elf_i386 -o iso/boot/kernel.bin -ffreestanding -mno-red-zone -O2 -nostdlib out/*.o
 
-grub-mkrescue -o t54.iso iso
+# Generate bootable iso
+mkisofs -R  \
+    -b  boot/grub/stage2_eltorito   \
+    -no-emul-boot                   \
+    -boot-load-size 4               \
+    -A os                           \
+    -input-charset utf8             \
+    -quiet                          \
+    -boot-info-table                \
+    -o t54.iso                      \
+    -V "T54 Root FS"                \
+    iso
 
 qemu-system-x86_64 -drive file=t54.iso,media=cdrom,if=ide -boot d -serial stdio

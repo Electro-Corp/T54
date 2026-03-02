@@ -40,7 +40,7 @@ int cdrom_detectDrive();
 
 // cdrom_readData
 // Read some data from the cd-drive into the buffer
-void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors);
+int cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors);
 
 
 // internal func   
@@ -48,7 +48,7 @@ void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors);
 
 // cdrom_readInternal
 // Internal read with more params
-void cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors, uint16_t* buffer);
+int cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors, uint16_t* buffer);
 
 // cdrom_ataWait
 // Wait 400 ns

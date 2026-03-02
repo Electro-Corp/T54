@@ -59,13 +59,13 @@ int cdrom_detectDrive(){
 
 // cdrom_readData
 // Read some data from the cd-drive into the buffer
-void cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors){
-    cdrom_readInternal(PORT, 0, lba, sectors, buffer);
+int cdrom_readData(uint32_t lba, uint16_t* buffer, uint32_t sectors){
+    return cdrom_readInternal(PORT, 0, lba, sectors, buffer);
 }
 
 // cdrom_readInternal
 // Internal read with more params 
-void cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors, uint16_t* buffer){
+int cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors, uint16_t* buffer){
     volatile uint8_t readCommand[12] = {0xA8, 0, (lba >> 0x18) & 0xFF, (lba >> 0x10) & 0xFF, (lba >> 0x08) & 0xFF, (lba >> 0x00) & 0xFF, (sectors >> 0x18) & 0xFF, (sectors >> 0x10) & 0xFF, (sectors >> 0x08) & 0xFF, (sectors >> 0x00) & 0xFF, 0, 0};
 
     io_out(port + DRIVE_SELECT, 0xA0 & (slave << 4)); // select drive
@@ -79,31 +79,30 @@ void cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors
     while(1){
         uint8_t status = io_in(port + COMMAND_REG);
         if((status & 0x01) == 1){
-            return 1; // Error out
+            return -1;
         }
         if(!(status & 0x80) && (status & 0x08)){
             break;
         }
+        cdrom_ataWait(port);
     }
 
     // Send read command
     io_outsw(port, (uint16_t*) readCommand, 6);
     // Read !!
     for(uint32_t i = 0; i < sectors; i++){
-        while(1){
-            uint8_t status = io_in(port + COMMAND_REG);
-            if((status & 0x01) == 1){
-                return 1; // Error out
-            }
-            if(!(status & 0x80) && (status & 0x08)){
-                break;
-            }
-        }
+        while (1) {
+			uint8_t status = io_in(port + COMMAND_REG);
+			if (status & 0x01)
+				return 1;
+			if (!(status & 0x80) && (status & 0x08))
+				break;
+		}
 
         // Get size
         int size = io_in((port + LBA_HIGH) << 8 | io_in(port + LBA_MID));
         // Read the data
-        io_insw(port, (uint16_t*)((uint8_t*)buffer + i * 0x800), size / 2);
+        io_insw(port, (uint16_t*)((uint8_t*) buffer + i * 0x800), size / 2);
     }
 
     return 0;
