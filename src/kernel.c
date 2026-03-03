@@ -7,6 +7,7 @@
 #include "idt.h"
 #include "gdt.h"
 #include "irq.h"
+#include "proc.h"
 #include "fs/fs.h"
 #include "drivers/devices.h"
 
@@ -60,7 +61,31 @@ void k_main(){
 
     // Load init program
     v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
+    
+    // Open a test ELF
+    int testELFHandle = fs_openFile("/bin/test.");
+    uint8_t* program = (uint8_t*)malloc(sizeof(uint8_t) * 13372);
+    int g = fs_readFile(testELFHandle, program, 13372);
+    if(g < 0){
+        switch(testELFHandle){
+            case FILE_NOT_FOUND:
+                v_terminalWrite("FILE_NOT_FOUND\n");
+                break;
+            case TRIED_TO_OPEN_DIRECTORY:
+                v_terminalWrite("TRIED_TO_OPEN_DIRECTORY\n");
+                break;
+            case INVALID_FS_HANDLE:
+                v_terminalWrite("INVALID_FS_HANDLE\n");
+                break;
+            case INVALID_IMPL_HANDLE:
+                v_terminalWrite("INVALID_IMPL_HANDLE\n");
+                break;
+        }
+    }
 
+    proc_loadProgram(program);
+
+    
     while(1){
         int c = keyboard_popLastChar();
         if(c > 0){

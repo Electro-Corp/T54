@@ -1,7 +1,5 @@
 #include "keyboard.h"
 
-#include "../video.h"
-
 // keyboard_handleInterrupt
 // Handle keyboard input
 void keyboard_handleInterrupt(struct regs *r){

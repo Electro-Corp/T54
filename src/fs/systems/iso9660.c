@@ -81,6 +81,7 @@ void iso9660_parseDirectory(uint32_t dirLba, char* directory){
             if(entry.isDirectory) strcat(fullPath, "/");
 
             strcpy(fullPath, entry.fileName);
+            
 
             entries[entryCount++] = entry;
         }
@@ -122,11 +123,11 @@ int iso9660_readFile(int handle, void* buffer, int n){
 
     // How many sectors?
     int sectors = 1;
-    if(n > 2048){
-        sectors = n / 2048;
+    if(entry.size > 2048){
+        sectors = entry.size / 2048;
     }
     // Read from extent into (our) buffer
-    uint8_t sector[2048];
+    uint8_t sector[entry.size];
     cdrom->readData(entry.location, (uint16_t*)sector, sectors);
 
     // Copy amount requested
