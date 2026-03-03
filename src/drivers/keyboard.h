@@ -8,6 +8,9 @@
 #include "../io.h"
 #include "../irq.h"
 
+#define LEFT_SHIFT 999
+#define RIGHT_SHIFT 998
+
 // The famous table
 static unsigned char keyTable[128] = {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
@@ -17,9 +20,9 @@ static unsigned char keyTable[128] = {
   't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',	/* Enter key */
     0,			/* 29   - Control */
   'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',	/* 39 */
- '\'', '`',   0,		/* Left shift */
+ '\'', '`',  LEFT_SHIFT,		/* Left shift */
  '\\', 'z', 'x', 'c', 'v', 'b', 'n',			/* 49 */
-  'm', ',', '.', '/',   0,				/* Right shift */
+  'm', ',', '.', '/',   RIGHT_SHIFT,				/* Right shift */
   '*',
     0,	/* Alt */
   ' ',	/* Space bar */
@@ -48,6 +51,9 @@ static unsigned char keyTable[128] = {
     0,	/* All other keys are undefined */
 };
 
+// Shift key
+static int shiftHeld = 0;
+
 // Last char
 static int lastCharacter = 0;
 
@@ -59,7 +65,7 @@ void keyboard_handleInterrupt(struct regs *r);
 // Clear the buffer
 void keyboard_clearBuffer();
 
-// keyboard_clearBuffer
+// keyboard_popLastChar
 // Get the last char and clear buffer
 char keyboard_popLastChar();
 

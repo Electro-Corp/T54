@@ -14,10 +14,14 @@
 #include "drivers/cdrom.h"
 #include "drivers/keyboard.h"
 
+// Root device selection
+int renderRootDeviceSelector();
 
 void k_main(){
     v_initTerminal();
-    v_terminalWrite("T54 Kernel Version 0.1.17\n");
+    v_terminalWrite("T54 Kernel Version 0.1.1 (Built @ ");
+    v_terminalWrite(__TIME__);
+    v_terminalWrite(")\n");
     v_terminalWrite("(c) 2025-2026 Electro-Corp, All Rights Reserved\n");
     v_terminalWrite("-----------------------------------------------\n");
     
@@ -48,6 +52,27 @@ void k_main(){
     v_terminalWrite("[   ]      HDD\n");    
     v_terminalWrite("=============================\n");
     v_terminalWrite("\'w\', \'s\' and ENTER...\n");
+    
+    int devId = renderRootDeviceSelector();
+
+    // Initilize the file system
+    fs_init(dev_getStorageDeviceWithIndex(devId));
+
+    // Load init program
+    v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
+
+    while(1){
+        int c = keyboard_popLastChar();
+        if(c > 0){
+            v_terminalPushChar(c);
+            v_updateCursor();
+        }
+    }
+}
+
+
+// Root device selection
+int renderRootDeviceSelector(){
     // Save position of items
     int cdSel = v_getRow() - 4, draw = 0, idx = 0, done = 0;
     while(!done){
@@ -79,18 +104,5 @@ void k_main(){
     }
     // Reset row
     v_setRow(cdSel + 5);
-
-    // Initilize the file system
-    fs_init(dev_getStorageDeviceWithIndex(idx));
-
-    // Load init program
-    v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
-
-    while(1){
-        int c = keyboard_popLastChar();
-        if(c > 0){
-            v_terminalPushChar(c);
-            v_updateCursor();
-        }
-    }
+    return idx;
 }
