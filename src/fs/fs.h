@@ -5,6 +5,7 @@
 #ifndef FS_H
 #define FS_H
 
+#include "../panic.h"
 #include "../memory.h"
 #include "../drivers/devices.h"
 

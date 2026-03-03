@@ -34,7 +34,7 @@ static int strcat(char* root, const char* append){
 // strcpy
 // Copy one string to another
 static int strcpy(const char* src, char* dst){
-    int n = strlen(dst);
+    int n = strlen(src);
     for(int i = 0 ; i < n; i++){
         *dst++ = *src++;
     }

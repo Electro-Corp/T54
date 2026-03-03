@@ -3,6 +3,8 @@
     isr.c - isr's for interrupts
 */
 
+#include "panic.h"
+
 // Externs to the functions from ASM
 // ugly i know
 extern void isr_0();
@@ -37,6 +39,9 @@ extern void isr_28();
 extern void isr_29();
 extern void isr_30();
 extern void isr_31();
+
+// IDT gate setter
+extern void idt_setGate(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags);
 
 // Hold registers so we can read on an exception
 struct regs{

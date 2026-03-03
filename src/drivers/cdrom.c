@@ -100,7 +100,7 @@ int cdrom_readInternal(uint16_t port, int slave, uint32_t lba, uint32_t sectors,
 		}
 
         // Get size
-        int size = io_in((port + LBA_HIGH) << 8 | io_in(port + LBA_MID));
+        int size = io_in(port + LBA_HIGH) << 8 | io_in(port + LBA_MID);
         // Read the data
         io_insw(port, (uint16_t*)((uint8_t*) buffer + i * 0x800), size / 2);
     }

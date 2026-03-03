@@ -47,7 +47,7 @@ void gdt_setGate(int num, unsigned long base, unsigned long limit, unsigned char
 void gdt_install(){
     // Setup GDT pointer/limit
     gp.limit = (sizeof(struct gdt_entry) * 3) - 1;
-    gp.base = &gdt;
+    gp.base = (int)&gdt;
 
     // Null sec
     gdt_setGate(0,0,0,0,0);

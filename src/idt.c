@@ -23,6 +23,8 @@ struct idt_ptr idt_p;
 
 // ASM function to load our IDT
 extern void idt_load();
+// ISR installation function
+extern void isrs_install();
 
 // idt_setGate
 // Set entry within IDT
@@ -42,7 +44,7 @@ void idt_setGate(unsigned char num, unsigned long base, unsigned short sel, unsi
 // Install the IDT and create ISRs
 void idt_install(){
     idt_p.limit = (sizeof(struct idt_entry) * 256) - 1;
-    idt_p.base = &idt;
+    idt_p.base = (int)&idt;
 
     // Clear out entire IDT
     memset(&idt, 0 , sizeof(struct idt_entry) * 256);

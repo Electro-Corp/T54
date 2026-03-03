@@ -28,10 +28,6 @@ char* exceptionMessages[] = {
     "Machine Check",
 };
 
-void kpanic_exceptionNumber(int int_no){
-    kpanic(exceptionMessages[int_no]);
-}
-
 void kpanic(const char* message){
     // Out to serial should everything else die
     io_print("Kernel Panic: ");
@@ -51,4 +47,8 @@ void kpanic(const char* message){
     v_setCol(0);
     v_terminalWrite("No debugger connected.\n");
     asm("hlt");
+}
+
+void kpanic_exceptionNumber(int int_no){
+    kpanic(exceptionMessages[int_no]);
 }

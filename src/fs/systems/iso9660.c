@@ -22,15 +22,14 @@ struct FilesystemImpl iso9660_getFSImpl(){
 // Cache directories
 void iso9660_initFS(struct StorageDevice* device){
     cdrom = device;
-    //3
+    //
     uint8_t primaryVolumeDescriptor[2048];
-    if(cdrom->readData(16, &primaryVolumeDescriptor, 1) != 0){
+    if(cdrom->readData(16, (uint16_t*)primaryVolumeDescriptor, 1) != 0){
         v_terminalWrite("[CD-ROM] Failed to read Primary Volume Descriptor!\n");
     }
 
     // Root directory extent
     uint32_t rootLBA = iso9660_littleEndianTo32(primaryVolumeDescriptor + FIRST_DIRECTORY_ENTRY_OFFSET + 2);
-    
     // Start parsing
     v_terminalWrite("[ISO9660] Caching directories...");
     // Init directories
@@ -44,8 +43,8 @@ void iso9660_initFS(struct StorageDevice* device){
 // Parse a directory record and add it to our list
 void iso9660_parseDirectory(uint32_t dirLba, char* directory){
     // Load the sector into memory
-    uint8_t sector[2048];
-    if(cdrom->readData(dirLba, &sector, 1) != 0){
+    uint8_t directorySector[2048];
+    if(cdrom->readData(dirLba, (uint16_t*)directorySector, 1) != 0){
         v_terminalWrite("[CD-ROM] Failed to read sector!\n");
     }
     int currentPos = 0, safety = 0;
@@ -53,42 +52,48 @@ void iso9660_parseDirectory(uint32_t dirLba, char* directory){
         // Begin retriving data
         struct iso9660DirectoryEntry entry;
         // Basic info
-        uint8_t flags = sector[currentPos + 25];
-        uint8_t idSize = sector[currentPos + 32];
+        uint8_t flags = directorySector[currentPos + 25];
+        uint8_t idSize = directorySector[currentPos + 32];
 
         entry.isDirectory = (flags >> 1) & 1;
 
         char tempName[64] = {0};
 
-        memcpy(sector + currentPos + 33, tempName, idSize);
-        v_terminalWrite(tempName);
-        v_terminalWrite("\n");
+        if(!entry.isDirectory) idSize -= 2; // Remove ";n" from the end
 
-        entry.location = iso9660_littleEndianTo32(sector + currentPos + 2);
-        entry.size = iso9660_littleEndianTo32(sector + currentPos + 10);
+        memcpy(directorySector + currentPos + 33, tempName, idSize);
+
+        tempName[idSize] = '\0';
+
+        // "." directory
+        if(idSize < 1){
+            tempName[0] = '.';
+            tempName[1] = '\0';
+        }
+
+        entry.location = iso9660_littleEndianTo32(directorySector + currentPos + 2);
+        entry.size = iso9660_littleEndianTo32(directorySector + currentPos + 10);
 
         char fullPath[256] = {0};
         if(idSize > 1){
             strcat(fullPath, directory);
             strcat(fullPath, tempName);
-
             if(entry.isDirectory) strcat(fullPath, "/");
 
             strcpy(fullPath, entry.fileName);
 
-            // v_terminalWrite(entry.fileName);
-            // v_terminalWrite("\n");
+            v_terminalWrite(entry.fileName);
+            v_terminalWrite("\n");
 
             entries[entryCount++] = entry;
         }
 
         if(entry.isDirectory && idSize > 1){
-            v_terminalWrite("Parsing a dir\n");
-            iso9660_parseDirectory(entry.location, entry.fileName);
+            iso9660_parseDirectory(entry.location, fullPath);
         }
 
-        currentPos += sector[currentPos];
-        if(sector[currentPos] == 0) break;
+        currentPos += directorySector[currentPos];
+        if(directorySector[currentPos] == 0) break;
     }
 }
 

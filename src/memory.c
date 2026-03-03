@@ -36,13 +36,13 @@ void* malloc(size_t size){
         // Create a chunk header
         struct chunkHeader tmp = {startMemory, sizeof(struct chunkHeader) + startMemory + size, 0, -1};
         // Copy the chunk header to right before 
-        memcpy(&tmp, startMemory, sizeof(tmp));
+        memcpy(&tmp, &startMemory, sizeof(tmp));
     }else{
         // Copy our current chunk
-        memcpy(&freeChunks[usingPreviouslyAlloc], startMemory, sizeof(struct chunkHeader));
+        memcpy(&freeChunks[usingPreviouslyAlloc], &startMemory, sizeof(struct chunkHeader));
     }
     // If we do, allocate it
-    void* ptr = startMemory + sizeof(struct chunkHeader);
+    void* ptr = &startMemory + sizeof(struct chunkHeader);
     lastAddr += size + sizeof(struct chunkHeader);
 
     return ptr;

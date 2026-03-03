@@ -10,12 +10,16 @@
 // Devices
 #include "drivers/cdrom.h"
 
+// GDT and IDT
+extern void gdt_install();
+extern void idt_install();
+
 // Test malloc
 void testMalloc();
 
 void k_main(){
     v_initTerminal();
-    v_terminalWrite("T54 Kernel Version 0.1\n");
+    v_terminalWrite("T54 Kernel Version 0.1.15\n");
     v_terminalWrite("(c) 2025-2026 Electro-Corp, All Rights Reserved\n");
     v_terminalWrite("-----------------------------------------------\n");
     
@@ -43,8 +47,6 @@ void k_main(){
     v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
 
     fs_init(dev_getStorageDeviceWithIndex(0));
-
-    return 0;
 }
 
 void testMalloc(){
