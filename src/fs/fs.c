@@ -58,7 +58,7 @@ int fs_readFile(int handle, void* buffer, int n){
 // fs_writeFile
 // Write [n] bytes into a file from buffer 
 void fs_writeFile(int handle, void* buffer, int n){
-
+    
 }
 
 // fs_closeFile

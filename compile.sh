@@ -17,6 +17,8 @@ i686-elf-gcc -c src/gdt.c -o out/gdt.o -std=gnu99 -ffreestanding -O2 -Wall -Wext
 i686-elf-gcc -c src/idt.c -o out/idt.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # isr
 i686-elf-gcc -c src/isr.c -o out/isr.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
+# irq
+i686-elf-gcc -c src/irq.c -o out/irq.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # panic
 i686-elf-gcc -c src/panic.c -o out/panic.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 
@@ -26,6 +28,8 @@ i686-elf-gcc -c src/panic.c -o out/panic.o -std=gnu99 -ffreestanding -O2 -Wall -
 i686-elf-gcc -c src/drivers/devices.c -o out/devices.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # CD-ROM
 i686-elf-gcc -c src/drivers/cdrom.c -o out/cdrom.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
+# PS/2 Keyboard
+i686-elf-gcc -c src/drivers/keyboard.c -o out/keyboard.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 
 #
 # fs

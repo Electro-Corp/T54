@@ -4,18 +4,16 @@
 */
 #include "video.h"
 #include "memory.h"
+#include "idt.h"
+#include "gdt.h"
+#include "irq.h"
 #include "fs/fs.h"
 #include "drivers/devices.h"
 
 // Devices
 #include "drivers/cdrom.h"
+#include "drivers/keyboard.h"
 
-// GDT and IDT
-extern void gdt_install();
-extern void idt_install();
-
-// Test malloc
-void testMalloc();
 
 void k_main(){
     v_initTerminal();
@@ -33,6 +31,12 @@ void k_main(){
     idt_install();
     v_terminalWrite("IDT loaded.\n");
 
+    // Init IRQs
+    irq_install();
+    // Initilize the keyboard
+    irq_installHandler(1, keyboard_handleInterrupt);
+    __asm__ __volatile__ ("sti"); 
+    
     dev_initStorageDevices();
 
     v_terminalWrite("-----------------------------------------------\n");
@@ -50,30 +54,9 @@ void k_main(){
 
     // Load init program
     v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
-}
 
-void testMalloc(){
-    // test malloc
-    const char* a1 = "Testing malloc, this is string one.\n";
-    const char* a2 = "Continuing the test, this is string two.\n";
-    char* test = (char*)malloc(sizeof(char) * strlen(a1));
-    memcpy(a1, test, strlen(a1));
-    v_terminalWrite(test);
-
-    char* test2 = (char*)malloc(sizeof(char) * strlen(a2));
-    memcpy(a2, test2, strlen(a2));
-    v_terminalWrite(test2);
-
-    // free them, we're done
-    free(test);
-    free(test2);
-
-    // Now that we freed some memory.. 
-    // lets try and reallocate and see if we get that 
-    // memory again
-    const char* a3 = "Realloc attempt.\n";
-    char* test3 = (char*)malloc(sizeof(char) * strlen(a3));
-    memcpy(a3, test3, strlen(a3));
-    v_terminalWrite(test3);
-    free(a3);
+    while(1){
+        int c = keyboard_popLastChar();
+        if(c > 0) v_terminalPushChar(c);
+    }
 }

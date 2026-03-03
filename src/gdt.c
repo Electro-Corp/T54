@@ -1,28 +1,10 @@
-/**
- * T54
- * gdt.c - manages our GDT
- */
- 
-// One GDT entry
-struct gdt_entry{
-    unsigned short limit_L;
-    unsigned short base_L;
-    unsigned char base_M;
-    unsigned char access;
-    unsigned char gran;
-    unsigned char base_H;
-} __attribute__((packed));
-
-// Pointer with the limit (max bytes taken up by GDT - 1)
-struct gdt_ptr{
-    unsigned short limit;
-    unsigned int base;
-} __attribute__((packed));
+#include "gdt.h"
 
 // One gdt, with three entries
 struct gdt_entry gdt[3];
 // Pointer to gdt 
 struct gdt_ptr gp;
+
 
 // ASM function to reload segment registers
 extern void gdt_flush();
