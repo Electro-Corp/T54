@@ -41,7 +41,7 @@ int iso9660_openFile(const char* name);
 
 // iso9660_readFile
 // Read a file into a buffer
-void iso9660_readFile(int handle, void* buffer, int n);
+int iso9660_readFile(int handle, void* buffer, int n);
 
 // iso9660_closeFS
 // Close the filesystem

@@ -31,6 +31,17 @@ static int strcat(char* root, const char* append){
 	return 0;
 }
 
+// strcmp
+// Compare two strings (0 for match, -1 for not)
+static int strcmp(const char* strA, const char* strB){
+	int n = strlen(strA), m = strlen(strB);
+	if(n != m) return -1;
+	for(int i = 0; i < n; i++){
+		if(*strA++ != *strB++) return -1;
+	}
+	return 0;
+}
+
 // strcpy
 // Copy one string to another
 static int strcpy(const char* src, char* dst){

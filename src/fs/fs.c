@@ -30,6 +30,48 @@ void fs_init(struct StorageDevice* rootDeviceIn){
     rootFS.initFilesystem(rootDevice);
 }
 
+// fs_openFile
+// Open a file and get its handle
+int fs_openFile(const char* name){
+    // Call FS impl
+    int fileID = rootFS.openFile(name);
+    if(fileID < 0){
+        return fileID; // It's an error 
+    }
+    // Generate an id
+    int id = fs_generateFileHandle(name, fileID);
+    return id;
+}
+
+// fs_readFile
+// Read [n] bytes into a buffer from a file
+int fs_readFile(int handle, void* buffer, int n){
+    // Get file
+    if(handle > fileCount || files[handle].used == 0 || handle < 0) return INVALID_FS_HANDLE; // Handle is invalid
+    
+    int implHandle = files[handle].internalHandle;
+    int error = rootFS.readFile(implHandle, buffer, n);
+
+    return error;
+}
+
+// fs_writeFile
+// Write [n] bytes into a file from buffer 
+void fs_writeFile(int handle, void* buffer, int n){
+
+}
+
+// fs_closeFile
+// Close a file and free its handle
+int fs_closeFile(int handle){
+    // Get file
+    if(handle > fileCount || files[handle].used == 0 || handle < 0) return INVALID_FS_HANDLE; // Handle is invalid
+    // Set used to nah
+    files[handle].used = 0;
+
+    return 0;
+}
+
 // fs_shutdown
 // Shutdown the filesystem and sync filesystems
 void fs_shutdown(){
@@ -41,45 +83,36 @@ void fs_shutdown(){
     free(files);
 }
 
-// fs_openFile
-// Open a file and get its handle
-int fs_openFile(const char* name){
-    // temp, in the future call a function
-    // within a specfic implementation    
-    return -1;
-}
-
-// fs_readFile
-// Read [n] bytes into a buffer from a file
-void fs_readFile(int handle, void* buffer, int n){
-
-}
-
-// fs_writeFile
-// Write [n] bytes into a file from buffer 
-void fs_writeFile(int handle, void* buffer, int n){
-
-}
-
-// fs_closeFile
-// Close a file and free its handle
-void fs_closeFile(int handle){
-
-}
-
 // fs_generateFileHandle
 // Get HANDLE for a new file
-int fs_generateFileHandle(const char* fileName){
-    struct File tmp = fs_generateFileStruct(fileName);
+int fs_generateFileHandle(const char* fileName, int implId){
+    struct File tmp = fs_generateFileStruct(fileName, implId);
     // add to files here
-
+    if(tmp.handle < fileCount){
+        memcpy(&tmp, files + tmp.handle, sizeof(tmp));
+    }else{
+        memcpy(&tmp, files + fileCount, sizeof(tmp));
+    }
     // return the handle
     return tmp.handle;
 }
 
 // fs_generateFileStruct
 // Generate a new file
-struct File fs_generateFileStruct(const char* fileName){
-    struct File tmp = {-1, fileName};
+struct File fs_generateFileStruct(const char* fileName, int implId){
+    struct File tmp;
+    strcpy(fileName, tmp.fileName);
+    tmp.handle = fs_findNextHandle();
+    tmp.internalHandle = implId;
+    tmp.used = 1;
     return tmp;
+}
+
+// fs_findNextHandle
+// Get next free handle
+int fs_findNextHandle(){
+    for(int i = 0; i < fileCount; i++){
+        if(files[i].used == 0) return files[i].handle;
+    }
+    return fileCount;
 }

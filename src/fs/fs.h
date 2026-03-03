@@ -25,19 +25,28 @@ struct FilesystemImpl{
     // Returns a handle. 
     int (*openFile)(const char* name);
     // Reads a file
-    void (*readFile)(int handle, void* buffer, int n);
+    int (*readFile)(int handle, void* buffer, int n);
     // Writes a file
     void (*writeFile)(int handle, void* buffer, int n);
 };
 
 // File
 struct File{
-    int handle; // Very important
-    const char* fileName;
+    int handle, internalHandle, used;
+    const char fileName[256];
+};
+
+// Errors
+enum FS_Errors{
+    TRIED_TO_OPEN_DIRECTORY = -1,
+    FILE_NOT_FOUND = -2,
+    INVALID_FS_HANDLE = -3,
+    INVALID_IMPL_HANDLE = -4
 };
 
 // File buffer
 static struct File* files;
+static int fileCount;
 
 // Root device
 static struct StorageDevice* rootDevice;
@@ -61,7 +70,7 @@ int fs_openFile(const char* name);
 
 // fs_readFile
 // Read [n] bytes into a buffer from a file
-void fs_readFile(int handle, void* buffer, int n);
+int fs_readFile(int handle, void* buffer, int n);
 
 // fs_writeFile
 // Write [n] bytes into a file from buffer 
@@ -69,16 +78,20 @@ void fs_writeFile(int handle, void* buffer, int n);
 
 // fs_closeFile
 // Close a file and free its handle
-void fs_closeFile(int handle);
+int fs_closeFile(int handle);
 
 // These are functions that implementations can call
 
 // fs_generateFileHandle
 // Get HANDLE for a new file
-int fs_generateFileHandle(const char* fileName);
+int fs_generateFileHandle(const char* fileName, int implId);
 
 // fs_generateFileHandle
 // Generate a new file, and store it in our data
-struct File fs_generateFileStruct(const char* fileName);
+struct File fs_generateFileStruct(const char* fileName, int implId);
+
+// fs_findNextHandle
+// Get next free handle
+int fs_findNextHandle();
 
 #endif

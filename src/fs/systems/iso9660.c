@@ -82,9 +82,6 @@ void iso9660_parseDirectory(uint32_t dirLba, char* directory){
 
             strcpy(fullPath, entry.fileName);
 
-            v_terminalWrite(entry.fileName);
-            v_terminalWrite("\n");
-
             entries[entryCount++] = entry;
         }
 
@@ -100,16 +97,42 @@ void iso9660_parseDirectory(uint32_t dirLba, char* directory){
 
 // iso9660_openFile
 // Open a file oon the system
-int iso9660_openFile(const char* name){
-    // Search the path table
-    
-    return -1;
+int iso9660_openFile(const char* name){            
+    // Search our enteries
+    for(int i = 0; i < entryCount; i++){
+        if(strcmp(entries[i].fileName, name) == 0){
+            if(entries[i].isDirectory) return TRIED_TO_OPEN_DIRECTORY;
+            // Found our file
+            return i;
+        }
+    }
+    return FILE_NOT_FOUND;
 }
 
 // iso9660_readFile
 // Read a file into a buffer
-void iso9660_readFile(int handle, void* buffer, int n){
+int iso9660_readFile(int handle, void* buffer, int n){
+    // Check if handle is real
+    if(handle > entryCount || handle < 0){
+        return INVALID_FS_HANDLE;
+    }
+    struct iso9660DirectoryEntry entry = entries[handle];
+    // Now that we know its in range, is it a directory
+    if(entry.isDirectory) return TRIED_TO_OPEN_DIRECTORY;
 
+    // How many sectors?
+    int sectors = 1;
+    if(n > 2048){
+        sectors = n / 2048;
+    }
+    // Read from extent into (our) buffer
+    uint8_t sector[2048];
+    cdrom->readData(entry.location, (uint16_t*)sector, sectors);
+
+    // Copy amount requested
+    memcpy(sector, buffer, n);
+
+    return 0;
 }
 
 // iso9660_closeFS
