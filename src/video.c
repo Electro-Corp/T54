@@ -28,7 +28,16 @@ void v_terminalPutChar(const char c, uint8_t color, int y, int x){
 // v_terminalPushChar
 // Push a character to the terminal, whilst managing position automatically
 void v_terminalPushChar(const char c){
-    v_terminalPutChar(c, tColor, currentRow, currentCol);
+    if(c == '\n'){
+        currentCol = -1;
+        if(currentRow == HEIGHT - 1){
+            v_terminalScroll();
+        }else{
+            currentRow++;
+        }
+    }else{
+        v_terminalPutChar(c, tColor, currentRow, currentCol);
+    }
     // Manage row and col
     if(currentCol == WIDTH){ 
         currentCol = 0;
@@ -46,7 +55,7 @@ void v_terminalPushChar(const char c){
 void v_terminalWrite(const char* c){
     for(int i = 0; i < strlen(c) - 1; i++){
         if(c[i] == '\n'){
-            if(currentRow == HEIGHT) v_terminalScroll();
+            if(currentRow == HEIGHT - 1) v_terminalScroll();
             else{
                 currentRow++;
             }
@@ -66,8 +75,12 @@ void v_terminalScroll(){
     // but then I thought, what if I memcpy 
     // the previous stuff
     // and then just redraw the last line
-    uint16_t* secondLineStart = &(v_Buffer[2 * WIDTH]);
-    memcpy(secondLineStart, v_Buffer, ((WIDTH * HEIGHT) + HEIGHT) - WIDTH);
+    uint16_t* secondLineStart = &(v_Buffer[WIDTH]);
+    memcpy(secondLineStart, v_Buffer, (WIDTH * HEIGHT * 2));
+
+    for(int i = 0; i < WIDTH; i++){
+        v_terminalPutChar(' ', tColor, HEIGHT - 1, i);
+    }
 }
 
 // v_updateCursor
@@ -110,3 +123,14 @@ void v_setCol(int n){
     currentCol = n;
 }
 
+// v_getRow
+// Gets the current draw row
+int v_getRow(){
+    return currentRow;
+}
+
+// v_getCol
+// Gets the current draw col
+int v_getCol(){
+    return currentCol;
+}

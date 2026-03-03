@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include "../video.h"
+#include "../panic.h"
 // Devices
 #include "cdrom.h"
 

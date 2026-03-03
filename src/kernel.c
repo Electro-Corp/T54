@@ -37,26 +37,60 @@ void k_main(){
     irq_installHandler(1, keyboard_handleInterrupt);
     __asm__ __volatile__ ("sti"); 
     
+    // Initilize storage devices
     dev_initStorageDevices();
 
     v_terminalWrite("-----------------------------------------------\n");
 
+    // Root selection
     v_terminalWrite("===== Root FS selection =====\n");
-    // Once keyboard input works, detect drives and
-    // have the user select the boot media
-    // until then, just assume CD-ROM
     v_terminalWrite("[ X ]      CD-ROM\n");  
     v_terminalWrite("[   ]      HDD\n");    
     v_terminalWrite("=============================\n");
+    v_terminalWrite("\'w\', \'s\' and ENTER...\n");
+    // Save position of items
+    int cdSel = v_getRow() - 4, draw = 0, idx = 0, done = 0;
+    while(!done){
+        draw = 0;
+        int c = keyboard_popLastChar();
+        switch(c){
+            case 's':
+                if(idx < 1) idx++;
+                draw = 1;
+                break;
+            case 'w':
+                if(idx > 0) idx--;
+                draw = 1;
+                break;
+            case '\n':
+                done = 1;
+                draw = 1;
+                break;
+        }
+        // Render if needed
+        if(draw){
+            v_setRow(cdSel);
+            if(idx == 0) v_terminalWrite("[ X ]      CD-ROM\n");
+            else   v_terminalWrite("[   ]      CD-ROM\n");
+            v_setRow(cdSel + 1);
+            if(idx == 1) v_terminalWrite("[ X ]      HDD\n");
+            else   v_terminalWrite("[   ]      HDD\n");
+        }
+    }
+    // Reset row
+    v_setRow(cdSel + 5);
 
     // Initilize the file system
-    fs_init(dev_getStorageDeviceWithIndex(0));
+    fs_init(dev_getStorageDeviceWithIndex(idx));
 
     // Load init program
     v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
 
     while(1){
         int c = keyboard_popLastChar();
-        if(c > 0) v_terminalPushChar(c);
+        if(c > 0){
+            v_terminalPushChar(c);
+            v_updateCursor();
+        }
     }
 }

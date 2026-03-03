@@ -79,4 +79,12 @@ void v_setRow(int n);
 // v_setCol
 // Set current draw col
 void v_setCol(int n);
+
+// v_getRow
+// Gets the current draw row
+int v_getRow();
+
+// v_getCol
+// Gets the current draw col
+int v_getCol();
 #endif

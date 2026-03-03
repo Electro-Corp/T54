@@ -21,5 +21,8 @@ void dev_initStorageDevices(){
 // dev_getStorageDeviceWithIndex
 // Get the storage device at a specfied index
 struct StorageDevice* dev_getStorageDeviceWithIndex(int i){
+    if(i > storageDeviceCount){
+        kpanic("Selected device doesn't exist!");
+    }
     return &storageDevices[i];
 }
