@@ -12,33 +12,25 @@
 
 #include "paging.h"
 
-#define HEAP_START 0x1000000 // Start at 16mb
-#define HEAP_END 0x4000000 // End at 67 mb, extendable when needed
-#define INITIAL_FREECHUNK_MAX 256
-
-static uint16_t lastAddr = 0;
-static uint16_t heapExtension = 0;
-
-struct chunkHeader{
-    uint16_t start, end;
-    int free, index;
-} __attribute__((packed));
-
-static struct chunkHeader freeChunks[INITIAL_FREECHUNK_MAX]; // need a way to increase his when needed
-                                                            // i have an idea, but i dunno how "proper" it is
-static int lastFreeChunk = 0;
-
 // kmalloc
-// Allocate some chunk of memory
+// Allocate some chunk of memory (assumes kernel page)
 void* kmalloc(size_t size);
 
 // kmalloc_loc
-// Allocate memory at a specfic location
+// Allocate memory at a specfic location (assumes kernel page)
 void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation);
+
+// kmalloc_directory
+// Allocate memory at a location with a specfic Paging_Process
+void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, int prevAllocation);
 
 // free
 // Free some chunk of memory
 void* free(void* ptr);
+
+// free_directory
+// Free memory at a location with a specfic Paging_Process
+void* free_directory(Paging_Process* proc, void* ptr);
 
 // memory_GetAllocatedChunks
 // Get current amount of allocated chunks

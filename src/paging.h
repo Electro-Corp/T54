@@ -11,6 +11,9 @@
 
 #define FRAME_SIZE 4096 
 #define MAX_FRAMES 32768 // 128 MB ram... TODO: read from Multiboot and detect real ram
+#define HEAP_START 0x1000000 // Start at 16mb
+#define HEAP_END 0x9000000  // End at 150 mb, extendable when needed
+#define INITIAL_FREECHUNK_MAX 256
 
 extern uint32_t kernelEnd; // linker.ld will tell us where our kernel ends, and where we can begin allocation
 
@@ -24,16 +27,34 @@ typedef struct {
     uint32_t entries[1024];
 } Paging_PageDirectory;
 
-static Paging_PageDirectory kernelDirectory __attribute__((aligned(4096)));
-static Paging_PageTable kernelTable __attribute__((aligned(4096)));
+struct chunkHeader{
+    uint16_t start, end;
+    int free, index;
+} __attribute__((packed));
+typedef struct {
+    Paging_PageDirectory directory __attribute__((aligned(4096)));
+    Paging_PageTable* table __attribute__((aligned(4096)));
+
+    // Heap allocation
+    uint16_t lastAddr;
+    uint16_t heapExtension;
+    struct chunkHeader freeChunks[INITIAL_FREECHUNK_MAX];
+    int lastFreeChunk;
+} Paging_Process;
+
+static Paging_Process kernelPageProcess __attribute__((aligned(4096)));
 
 // paging_mapFirst4MB
 // Map the first 4 megabytes into memory so we can enable paging
 void paging_mapFirst4MB();
 
+// paging_allocatePagingProcess
+// Create a new Paging_Process
+Paging_Process* paging_allocatePagingProcess();
+
 // paging_allocatePageDirectory
-// Allocate a new directory for a process
-Paging_PageDirectory* paging_allocatePageDirectory();
+// Allocate a new directory
+Paging_PageDirectory paging_allocatePageDirectory();
 
 // paging_allocatePageTable
 // Create a new page table
@@ -41,11 +62,11 @@ Paging_PageTable* paging_allocatePageTable();
 
 // paging_mapPage
 // Map a physical page to a virtual adderess
-void paging_mapPage(Paging_PageDirectory* directory, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags);
+void paging_mapPage(Paging_Process* directory, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags);
 
 // paging_loadPageDirectory
 // Loads a page directory into memory
-void paging_loadPageDirectory(Paging_PageDirectory* pageDir);
+void paging_loadPageDirectory(Paging_Process* pageDir);
 
 // paging_enablePaging
 // Enables paging 
@@ -57,6 +78,6 @@ uint32_t paging_allocatePage();
 
 // paging_getPhysicalAddr
 // Get the physical address of a virtual address
-void* paging_getPhysicalAddr(Paging_PageDirectory* directory, void *virtualAddr);
+void* paging_getPhysicalAddr(Paging_Process* directory, void *virtualAddr);
 
 #endif
