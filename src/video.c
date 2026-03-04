@@ -76,7 +76,7 @@ void v_terminalScroll(){
     // the previous stuff
     // and then just redraw the last line
     uint16_t* secondLineStart = &(v_Buffer[WIDTH]);
-    memcpy(secondLineStart, v_Buffer, (WIDTH * HEIGHT * 2));
+    memcpy(secondLineStart, v_Buffer, WIDTH * (HEIGHT - 1) * sizeof(uint16_t));
 
     for(int i = 0; i < WIDTH; i++){
         v_terminalPutChar(' ', tColor, HEIGHT - 1, i);

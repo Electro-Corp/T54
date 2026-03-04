@@ -19,6 +19,8 @@ Paging_Process* paging_allocatePagingProcess(){
     process.directory = paging_allocatePageDirectory();
     process.table = paging_allocatePageTable();
 
+    process.directory.entries[0] = ((uint32_t) process.table) | 3;
+
     // heap
     process.lastAddr = 0;
     process.heapExtension = 0;
@@ -31,7 +33,9 @@ Paging_Process* paging_allocatePagingProcess(){
 // Allocate a new directory for a process
 Paging_PageDirectory paging_allocatePageDirectory(){
     Paging_PageDirectory directory __attribute__((aligned(4096)));
-
+    for(int i = 0; i < 1024; i++){
+        directory.entries[i] = 0;
+    }
     return directory;
 }
 
@@ -85,9 +89,9 @@ void paging_enablePaging(){
 uint32_t paging_allocatePage(){
     for(int i = 0; i < MAX_FRAMES; i++){
         uint32_t id = i / 32, bit = i % 32;
-        if(!(memoryFrameBitmap[id] & (1 << bit))){ // This page is free
-            memoryFrameBitmap[i] |= (1 << bit);
-            return i * 0x1000;
+        if(!(memoryFrameBitmap[id] & (1U << bit))){ // This page is free
+            memoryFrameBitmap[id] |= (1U << bit);
+            return (i * 0x1000) + kernelEnd;
         }
     }
     return 0; // oh no

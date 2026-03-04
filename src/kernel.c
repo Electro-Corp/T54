@@ -85,7 +85,7 @@ void k_main(){
         }
     }
 
-    //proc_loadProgram(program);
+    proc_loadProgram(program);
  
     // Load init program
     v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");

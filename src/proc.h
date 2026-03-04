@@ -9,6 +9,7 @@
 
 #include "std/stdlib.h"
 #include "memory.h"
+#include "paging.h"
 
 //
 // ELF loading
@@ -70,9 +71,10 @@ typedef struct {
     Proc_ELFHeader header;
     Proc_ELFProgramTableEntry* programTableEntries;
 
-    uint32_t* pageDirectory;
+    Paging_Process* proccessPage;
 } Proc_ELFProgram;
 
+extern void jumpToUserMode(uint32_t entry, uint32_t stack);
 
 // proc_loadHeader
 // Just load a program's header

@@ -10,9 +10,9 @@
 #include "std/stdlib.h"
 
 #define FRAME_SIZE 4096 
-#define MAX_FRAMES 32768 // 128 MB ram... TODO: read from Multiboot and detect real ram
-#define HEAP_START 0x1000000 // Start at 16mb
-#define HEAP_END 0x9000000  // End at 150 mb, extendable when needed
+#define MAX_FRAMES 4096  // TODO: read from Multiboot and detect real ram
+#define HEAP_START 0x0000000 // Start at 0mb
+#define HEAP_END 0x1000000  // End at 16 mb, extendable when needed
 #define INITIAL_FREECHUNK_MAX 256
 
 extern uint32_t kernelEnd; // linker.ld will tell us where our kernel ends, and where we can begin allocation
@@ -62,11 +62,11 @@ Paging_PageTable* paging_allocatePageTable();
 
 // paging_mapPage
 // Map a physical page to a virtual adderess
-void paging_mapPage(Paging_Process* directory, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags);
+void paging_mapPage(Paging_Process* proc, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags);
 
 // paging_loadPageDirectory
 // Loads a page directory into memory
-void paging_loadPageDirectory(Paging_Process* pageDir);
+void paging_loadPageDirectory(Paging_Process* proc);
 
 // paging_enablePaging
 // Enables paging 
@@ -78,6 +78,6 @@ uint32_t paging_allocatePage();
 
 // paging_getPhysicalAddr
 // Get the physical address of a virtual address
-void* paging_getPhysicalAddr(Paging_Process* directory, void *virtualAddr);
+void* paging_getPhysicalAddr(Paging_Process* proc, void *virtualAddr);
 
 #endif

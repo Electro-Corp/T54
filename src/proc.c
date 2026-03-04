@@ -27,13 +27,16 @@ void* proc_loadProgram(uint8_t* programData){
     if(programTableEntriesNum > 0){
         program.programTableEntries = kmalloc(sizeof(Proc_ELFProgramTableEntry) * programTableEntriesNum);
         memcpy(programData + programTableLoc, program.programTableEntries, sizeof(Proc_ELFProgramTableEntry) * programTableEntriesNum);
+
+        // Allocate program page
+        program.proccessPage = paging_allocatePagingProcess();
         
         // Begin loading segments
         for(int i = 0; i < programTableEntriesNum; i++){
             if(program.programTableEntries[i].p_type == PT_LOAD){
                 v_terminalWrite("[Proc] Loading loadable segment...\n");
                 // Allocate memory
-                void* location = kmalloc_loc(program.programTableEntries[i].p_memsz, program.programTableEntries[i].p_paddr, -1);
+                void* location = kmalloc_directory(program.proccessPage, program.programTableEntries[i].p_memsz, program.programTableEntries[i].p_paddr, -1);
                 // Store memory location so we can free later
                 program.programTableEntries[i].loadedLocation = location;
                 // Copy entry data to location
@@ -43,9 +46,12 @@ void* proc_loadProgram(uint8_t* programData){
 
         v_terminalWrite("[Proc] Launching program...\n");
         // Let's jump 
-        void (*entrypoint)(void);
-        entrypoint = (void(*)())elfHeader.e_entry;
-        entrypoint();
+        uint32_t start = (unsigned long)paging_getPhysicalAddr(program.proccessPage, (void*)(elfHeader.e_entry));
+        //paging_loadPageDirectory(program.proccessPage);
+
+        //jumpToUserMode(start, 0x1000000);
+
+        //paging_loadPageDirectory(&kernelPageProcess);
     }else{
         v_terminalWrite("[Proc] ELF file doesn't have any loadable segments..\n");
         return (void*)0;

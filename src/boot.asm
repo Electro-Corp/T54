@@ -562,3 +562,19 @@ irq_commonStub:
 	popa
 	add esp, 8
 	iret
+
+;
+; Enter user mode
+;
+global jumpToUserMode
+
+jumpToUserMode:
+	cli
+	mov eax, [esp+4] ; entry
+	mov edx, [esp+8] ; stack
+	push 0x20
+	push edx
+	pushf
+	push 0x1B
+	push eax
+	iret
