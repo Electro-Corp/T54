@@ -32,14 +32,15 @@ struct chunkHeader{
     int free, index;
 } __attribute__((packed));
 typedef struct {
+    // Paging
     Paging_PageDirectory directory __attribute__((aligned(4096)));
     Paging_PageTable* table __attribute__((aligned(4096)));
 
     // Heap allocation
-    uint16_t lastAddr;
-    uint16_t heapExtension;
-    struct chunkHeader freeChunks[INITIAL_FREECHUNK_MAX];
-    int lastFreeChunk;
+    uint16_t lastAddr; // Last allocated address
+    uint16_t heapExtension; // Exend the heap?
+    struct chunkHeader freeChunks[INITIAL_FREECHUNK_MAX]; // Current chunks 
+    int lastFreeChunk; // Last free chunk we found
 } Paging_Process;
 
 static Paging_Process kernelPageProcess __attribute__((aligned(4096)));

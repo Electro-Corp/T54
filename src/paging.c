@@ -7,7 +7,7 @@ void paging_mapFirst4MB(){
         kernelPageProcess.table->entries[i] = ((i * 0x1000) | 0x3); // Get the physical address and then set 
     }
 
-    kernelPageProcess.directory.entries[0] = ((uint32_t) kernelPageProcess.table) | 3;
+    kernelPageProcess.directory.entries[768] = ((uint32_t) kernelPageProcess.table) | 3;
 
     paging_loadPageDirectory(&kernelPageProcess);
 }
