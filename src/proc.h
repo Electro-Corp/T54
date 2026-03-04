@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include "std/stdlib.h"
+#include "memory.h"
 
 //
 // ELF loading
@@ -60,11 +61,16 @@ typedef struct{
     Elf32_Word p_memsz; // Memory image size
     Elf32_Word p_flags; // Flags
     Elf32_Word p_align; // Alignment
+
+    // This is for the OS to know
+    void* loadedLocation;
 } Proc_ELFProgramTableEntry;
 
 typedef struct {
     Proc_ELFHeader header;
     Proc_ELFProgramTableEntry* programTableEntries;
+
+    uint32_t* pageDirectory;
 } Proc_ELFProgram;
 
 

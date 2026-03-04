@@ -33,7 +33,7 @@ void iso9660_initFS(struct StorageDevice* device){
     // Start parsing
     v_terminalWrite("[ISO9660] Caching directories...");
     // Init directories
-    entries = malloc(sizeof(struct iso9660DirectoryEntry) * 256);
+    entries = kmalloc(sizeof(struct iso9660DirectoryEntry) * 256);
     // Cache
     iso9660_parseDirectory(rootLBA, "/");
     v_terminalWrite("done.\n");
@@ -81,7 +81,6 @@ void iso9660_parseDirectory(uint32_t dirLba, char* directory){
             if(entry.isDirectory) strcat(fullPath, "/");
 
             strcpy(fullPath, entry.fileName);
-            
 
             entries[entryCount++] = entry;
         }
@@ -126,8 +125,9 @@ int iso9660_readFile(int handle, void* buffer, int n){
     if(entry.size > 2048){
         sectors = entry.size / 2048;
     }
+
     // Read from extent into (our) buffer
-    uint8_t sector[entry.size];
+    uint8_t sector[sectors * 2048];
     cdrom->readData(entry.location, (uint16_t*)sector, sectors);
 
     // Copy amount requested

@@ -12,10 +12,11 @@ So what follows is a "design" document of sorts, explaining how things work and 
 2. Load the Global Descriptor Table
 3. Load the Interrupt Descriptor Table
 4. Setup catching exceptions for kernel panics
-5. Select where the root filesystem is (HDD or CDROM)
-6. Initilize devices
-7. Initilize the filesystem
-8. Load /bin/init from that device ("/bin/init? that's a POSIX thing!!")
+5. Initilize paging and memory managment
+6. Select where the root filesystem is (HDD or CDROM)
+7. Initilize devices
+8. Initilize the filesystem
+9. Load /bin/init from that device ("/bin/init? that's a POSIX thing!!")
 
 ## Hardware
 The kernel abstracts hardware through `drivers/devices.h`. Structs with function pointers are used for each hardware device, for example Storage Devices (codeblock may not always be up to date, check `devices.h`):
@@ -50,13 +51,6 @@ struct FilesystemImpl{
 };
 ```
 These function pointers act like virtual functions, allowing each filesystem to have their own implementation. 
-
-### Files
-To generate a handle for a file, each implementation calls a function from within `fs.h`:
-```c
-int fs_generateFileHandle(const char* fileName);
-```
-This function calls an intenral Filesystem function that generates a handle and stores it for itself. 
 
 ## /bin/init
 /bin/init ~~is~~ *will be* an ELF executable that preforms most start-up tasks. One of these is to start up a shell (/bin/shell) for the user to interact with.

@@ -25,11 +25,30 @@ void* proc_loadProgram(uint8_t* programData){
 
     // Generate program table entries
     if(programTableEntriesNum > 0){
-        program.programTableEntries = malloc(sizeof(Proc_ELFProgramTableEntry) * programTableEntriesNum);
+        program.programTableEntries = kmalloc(sizeof(Proc_ELFProgramTableEntry) * programTableEntriesNum);
         memcpy(programData + programTableLoc, program.programTableEntries, sizeof(Proc_ELFProgramTableEntry) * programTableEntriesNum);
+        
+        // Begin loading segments
+        for(int i = 0; i < programTableEntriesNum; i++){
+            if(program.programTableEntries[i].p_type == PT_LOAD){
+                v_terminalWrite("[Proc] Loading loadable segment...\n");
+                // Allocate memory
+                void* location = kmalloc_loc(program.programTableEntries[i].p_memsz, program.programTableEntries[i].p_paddr, -1);
+                // Store memory location so we can free later
+                program.programTableEntries[i].loadedLocation = location;
+                // Copy entry data to location
+                memcpy(programData + program.programTableEntries[i].p_offset, location, program.programTableEntries[i].p_memsz);
+            }
+        }
+
+        v_terminalWrite("[Proc] Launching program...\n");
+        // Let's jump 
+        void (*entrypoint)(void);
+        entrypoint = (void(*)())elfHeader.e_entry;
+        entrypoint();
     }else{
         v_terminalWrite("[Proc] ELF file doesn't have any loadable segments..\n");
-        return;
+        return (void*)0;
     }
 
 }
@@ -37,6 +56,11 @@ void* proc_loadProgram(uint8_t* programData){
 // proc_freeProgram
 // Program is finished executing
 void proc_freeProgram(Proc_ELFProgram program){
+    for(int i = 0; i < program.header.e_phnum; i++){
+        if(program.programTableEntries[i].p_type == PT_LOAD){
+            free(program.programTableEntries[i].loadedLocation);
+        }
+    }
     free(program.programTableEntries);
 }
 

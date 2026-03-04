@@ -10,6 +10,8 @@
 
 #include "std/stdlib.h"
 
+#include "paging.h"
+
 #define HEAP_START 0x1000000 // Start at 16mb
 #define HEAP_END 0x4000000 // End at 67 mb, extendable when needed
 #define INITIAL_FREECHUNK_MAX 256
@@ -26,9 +28,13 @@ static struct chunkHeader freeChunks[INITIAL_FREECHUNK_MAX]; // need a way to in
                                                             // i have an idea, but i dunno how "proper" it is
 static int lastFreeChunk = 0;
 
-// malloc
+// kmalloc
 // Allocate some chunk of memory
-void* malloc(size_t size);
+void* kmalloc(size_t size);
+
+// kmalloc_loc
+// Allocate memory at a specfic location
+void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation);
 
 // free
 // Free some chunk of memory

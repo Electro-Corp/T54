@@ -46,7 +46,7 @@ void kpanic(const char* message){
     v_setRow(24);
     v_setCol(0);
     v_terminalWrite("No debugger connected.\n");
-    asm("hlt");
+    asm("cli; hlt");
 }
 
 void kpanic_exceptionNumber(int int_no){

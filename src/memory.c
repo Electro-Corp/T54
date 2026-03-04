@@ -1,8 +1,8 @@
 #include "memory.h"
 
-// malloc
+// kmalloc
 // Allocate some chunk of memory
-void* malloc(size_t size){
+void* kmalloc(size_t size){
     uint16_t startMemory = HEAP_START + lastAddr;
     // First, check if we have a freed chunk we could
     // repurpose
@@ -24,25 +24,33 @@ void* malloc(size_t size){
         }
     }
 
+    return kmalloc_loc(size, startMemory, usingPreviouslyAlloc);
+}
+
+// kmalloc_loc
+// Allocate memory at a specfic location
+void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation){
+    // Convert location
+    void* realLocation = paging_getPhysicalAddr(&kernelDirectory, &location);
     // Check if we have memory
-    if(lastAddr + size > (HEAP_END + heapExtension) && usingPreviouslyAlloc == -1){
+    if(lastAddr + size > (HEAP_END + heapExtension) && prevAllocation == -1){
         // Check versus the physical memory of the system here
 
         // Extend the heap
         heapExtension += size; // do something with this value in the future
     }
 
-    if(usingPreviouslyAlloc == -1){
+    if(prevAllocation == -1){
         // Create a chunk header
-        struct chunkHeader tmp = {startMemory, sizeof(struct chunkHeader) + startMemory + size, 0, -1};
+        struct chunkHeader tmp = {(unsigned long)realLocation, sizeof(struct chunkHeader) + (unsigned long)realLocation + size, 0, -1};
         // Copy the chunk header to right before 
-        memcpy(&tmp, &startMemory, sizeof(tmp));
+        memcpy(&tmp, &location, sizeof(tmp));
     }else{
         // Copy our current chunk
-        memcpy(&freeChunks[usingPreviouslyAlloc], &startMemory, sizeof(struct chunkHeader));
+        memcpy(&freeChunks[prevAllocation], realLocation, sizeof(struct chunkHeader));
     }
     // If we do, allocate it
-    void* ptr = &startMemory + sizeof(struct chunkHeader);
+    void* ptr = realLocation + sizeof(struct chunkHeader);
     lastAddr += size + sizeof(struct chunkHeader);
 
     return ptr;
@@ -51,8 +59,9 @@ void* malloc(size_t size){
 // free
 // Free some chunk of memory
 void* free(void* ptr){
+    void* realLocation = paging_getPhysicalAddr(&kernelDirectory, ptr);
     // Read the memory chunk at that location
-    void* chunkPtr = ptr - sizeof(struct chunkHeader);
+    void* chunkPtr = realLocation - sizeof(struct chunkHeader);
     struct chunkHeader h;
     memcpy(chunkPtr, &h, sizeof(struct chunkHeader));
 
@@ -71,5 +80,5 @@ void* free(void* ptr){
 // memory_GetAllocatedChunks
 // Get current amount of allocated chunks
 int memory_GetAllocatedChunks(){
-   return 0;
+   return lastFreeChunk;
 }

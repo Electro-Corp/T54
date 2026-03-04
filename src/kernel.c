@@ -3,6 +3,7 @@
     kernel.c - C entry point for kernel
 */
 #include "video.h"
+#include "paging.h"
 #include "memory.h"
 #include "idt.h"
 #include "gdt.h"
@@ -41,7 +42,11 @@ void k_main(){
     // Initilize the keyboard
     irq_installHandler(1, keyboard_handleInterrupt);
     __asm__ __volatile__ ("sti"); 
-    
+
+    // Initilize paging
+    paging_mapFirst4MB();
+    paging_enablePaging();
+        
     // Initilize storage devices
     dev_initStorageDevices();
 
@@ -58,14 +63,11 @@ void k_main(){
 
     // Initilize the file system
     fs_init(dev_getStorageDeviceWithIndex(devId));
-
-    // Load init program
-    v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
     
     // Open a test ELF
     int testELFHandle = fs_openFile("/bin/test.");
-    uint8_t* program = (uint8_t*)malloc(sizeof(uint8_t) * 13372);
-    int g = fs_readFile(testELFHandle, program, 13372);
+    uint8_t* program = (uint8_t*)kmalloc(sizeof(uint8_t) * 560);
+    int g = fs_readFile(testELFHandle, program, 560);
     if(g < 0){
         switch(testELFHandle){
             case FILE_NOT_FOUND:
@@ -83,8 +85,10 @@ void k_main(){
         }
     }
 
-    proc_loadProgram(program);
-
+    //proc_loadProgram(program);
+ 
+    // Load init program
+    v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
     
     while(1){
         int c = keyboard_popLastChar();
