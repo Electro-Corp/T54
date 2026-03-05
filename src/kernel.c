@@ -66,8 +66,8 @@ void k_main(){
     
     // Open a test ELF
     int testELFHandle = fs_openFile("/bin/test.");
-    uint8_t* program = (uint8_t*)kmalloc(sizeof(uint8_t) * 560);
-    int g = fs_readFile(testELFHandle, program, 560);
+    uint8_t* program = (uint8_t*)kmalloc(sizeof(uint8_t) * 8576);
+    int g = fs_readFile(testELFHandle, program, 8576);
     if(g < 0){
         switch(testELFHandle){
             case FILE_NOT_FOUND:

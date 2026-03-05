@@ -31,10 +31,12 @@ struct chunkHeader{
     uint16_t start, end;
     int free, index;
 } __attribute__((packed));
+
 typedef struct {
     // Paging
     Paging_PageDirectory directory __attribute__((aligned(4096)));
-    Paging_PageTable* table __attribute__((aligned(4096)));
+    Paging_PageTable* tables[1024] __attribute__((aligned(4096)));
+    int tableCount;
 
     // Heap allocation
     uint16_t lastAddr; // Last allocated address

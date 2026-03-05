@@ -59,7 +59,8 @@ $compiler -T linker.ld -Wl,-m,elf_i386 -o iso/boot/kernel.bin -ffreestanding -mn
 #
 # Compile programs on disc
 #
-$compiler iso/sources/test1.c -o iso/bin/test -m32 -nostdlib
+$compiler -static iso/sources/test1.c -o iso/bin/test -m32 -nostdlib -ffreestanding -Wall -Wextra -s -Wl,--gc-sections -Os -ffunction-sections -fdata-sections
+readelf -l iso/bin/test
 
 #
 # Generate bootable iso

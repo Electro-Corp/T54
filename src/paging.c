@@ -4,10 +4,10 @@
 // Map the first 4 megabytes into memory so we can enable paging
 void paging_mapFirst4MB(){
     for(int i = 0; i < 1024; i++){
-        kernelPageProcess.table->entries[i] = ((i * 0x1000) | 0x3); // Get the physical address and then set 
+        kernelPageProcess.tables[0]->entries[i] = ((i * 0x1000) | 0x3); // Get the physical address and then set 
     }
 
-    kernelPageProcess.directory.entries[768] = ((uint32_t) kernelPageProcess.table) | 3;
+    kernelPageProcess.directory.entries[0] = ((uint32_t) kernelPageProcess.tables[0]) | 3;
 
     paging_loadPageDirectory(&kernelPageProcess);
 }
@@ -17,9 +17,11 @@ void paging_mapFirst4MB(){
 Paging_Process* paging_allocatePagingProcess(){
     Paging_Process process;
     process.directory = paging_allocatePageDirectory();
-    process.table = paging_allocatePageTable();
+    process.tables[0] = paging_allocatePageTable();
 
-    process.directory.entries[0] = ((uint32_t) process.table) | 3;
+    process.directory.entries[0] = ((uint32_t) process.tables[0]) | 3;
+
+    process.tableCount = 1;
 
     // heap
     process.lastAddr = 0;
@@ -59,6 +61,7 @@ void paging_mapPage(Paging_Process* process, uint32_t virtualAddress, uint32_t p
     Paging_PageTable* pageTable;
 
     if(!(process->directory.entries[pageDirectoryIdx] & 1)){
+        v_terminalWrite("[Pager] Allocating new page table\n");
         pageTable = paging_allocatePageTable();
         process->directory.entries[pageDirectoryIdx] = ((uint32_t) pageTable) | flags | 0x01;
     }else{
@@ -87,11 +90,11 @@ void paging_enablePaging(){
 // paging_allocatePage
 // Allocate a page
 uint32_t paging_allocatePage(){
-    for(int i = 0; i < MAX_FRAMES; i++){
+    for(int i = 1; i < MAX_FRAMES; i++){
         uint32_t id = i / 32, bit = i % 32;
-        if(!(memoryFrameBitmap[id] & (1U << bit))){ // This page is free
-            memoryFrameBitmap[id] |= (1U << bit);
-            return (i * 0x1000) + kernelEnd;
+        if(!(memoryFrameBitmap[id] & (1U << i))){ // This page is free
+            memoryFrameBitmap[id] |= (1U << i);
+            return (i * 0x1000);
         }
     }
     return 0; // oh no

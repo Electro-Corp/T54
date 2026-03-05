@@ -33,9 +33,16 @@ void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation){
    return kmalloc_directory(&kernelPageProcess, size, location, prevAllocation); 
 }  
 
+#include "video.h"
+
 // kmalloc_directory
 // Allocate memory at a location with a specfic page directory
-void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, int prevAllocation){
+void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, int prevAllocation){   
+    // Check if we break the allocation boundry
+    //if(location > (1024 * proc->tableCount)){
+        paging_mapPage(proc, location, paging_allocatePage(), 0x3);
+    //}
+    
     // Convert location
     void* realLocation = paging_getPhysicalAddr(proc, &location);
     // Check if we have memory
