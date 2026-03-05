@@ -9,6 +9,7 @@
 
 #include "std/stdlib.h"
 
+#define KERNEL_BASE 0xC0000000
 #define FRAME_SIZE 4096 
 #define MAX_FRAMES 4096  // TODO: read from Multiboot and detect real ram
 #define HEAP_START 0x0000000 // Start at 0mb
@@ -34,18 +35,22 @@ struct chunkHeader{
 
 typedef struct {
     // Paging
-    Paging_PageDirectory directory __attribute__((aligned(4096)));
+    Paging_PageDirectory* directory __attribute__((aligned(4096)));
     Paging_PageTable* tables[1024] __attribute__((aligned(4096)));
     int tableCount;
 
     // Heap allocation
-    uint16_t lastAddr; // Last allocated address
-    uint16_t heapExtension; // Exend the heap?
+    uint32_t lastAddr; // Last allocated address
+    uint32_t heapExtension; // Exend the heap?
     struct chunkHeader freeChunks[INITIAL_FREECHUNK_MAX]; // Current chunks 
     int lastFreeChunk; // Last free chunk we found
 } Paging_Process;
 
+// Page directory and table for the kernel
 static Paging_Process kernelPageProcess __attribute__((aligned(4096)));
+
+// Last directory in cr3
+static Paging_Process* currentlyLoadedProcess __attribute__((aligned(4096)));
 
 // paging_mapFirst4MB
 // Map the first 4 megabytes into memory so we can enable paging
@@ -57,7 +62,7 @@ Paging_Process* paging_allocatePagingProcess();
 
 // paging_allocatePageDirectory
 // Allocate a new directory
-Paging_PageDirectory paging_allocatePageDirectory();
+Paging_PageDirectory* paging_allocatePageDirectory();
 
 // paging_allocatePageTable
 // Create a new page table
@@ -82,5 +87,9 @@ uint32_t paging_allocatePage();
 // paging_getPhysicalAddr
 // Get the physical address of a virtual address
 void* paging_getPhysicalAddr(Paging_Process* proc, void *virtualAddr);
+
+// paging_getCurrentlyLoadedProcess
+// Get the current loaded process in cr3
+Paging_Process* paging_getCurrentlyLoadedProcess();
 
 #endif

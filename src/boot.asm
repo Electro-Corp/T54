@@ -568,13 +568,28 @@ irq_commonStub:
 ;
 global jumpToUserMode
 
-jumpToUserMode:
+jumpToUserMode_old:
 	cli
 	mov eax, [esp+4] ; entry
 	mov edx, [esp+8] ; stack
 	push 0x20
 	push edx
-	pushf
-	push 0x1B
+	pushf ; 
+	push (3 * 8) | 3
 	push eax
+	iret
+
+jumpToUserMode:
+	mov ax, (4 * 8) | 3
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+
+	mov eax, esp
+	push (4 * 8) | 3
+	pushf
+	push (3 * 8) | 3
+	mov ebx, [esp+4]
+	push ebx
 	iret

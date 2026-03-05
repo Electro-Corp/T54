@@ -13,11 +13,11 @@
 #include "paging.h"
 
 // kmalloc
-// Allocate some chunk of memory (assumes kernel page)
+// Allocate some chunk of memory (assumes current page)
 void* kmalloc(size_t size);
 
 // kmalloc_loc
-// Allocate memory at a specfic location (assumes kernel page)
+// Allocate memory at a specfic location (assumes current page)
 void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation);
 
 // kmalloc_directory

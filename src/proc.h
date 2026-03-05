@@ -76,10 +76,6 @@ typedef struct {
 
 extern void jumpToUserMode(uint32_t entry, uint32_t stack);
 
-// proc_loadHeader
-// Just load a program's header
-Proc_ELFHeader proc_loadHeader(uint8_t* programData);
-
 // proc_loadProgram
 // Load a program into memory
 void* proc_loadProgram(uint8_t* programData);

@@ -32,20 +32,22 @@ void k_main(){
     gdt_install();
     v_terminalWrite("GDT installed.\n");
 
+    // Initilize paging
+    paging_mapFirst4MB();
+    paging_enablePaging();
+
     // Load IDT
     v_terminalWrite("[Kernel] Loading IDT...");
     idt_install();
     v_terminalWrite("IDT loaded.\n");
+
+    // 0xC0000000
 
     // Init IRQs
     irq_install();
     // Initilize the keyboard
     irq_installHandler(1, keyboard_handleInterrupt);
     __asm__ __volatile__ ("sti"); 
-
-    // Initilize paging
-    paging_mapFirst4MB();
-    paging_enablePaging();
         
     // Initilize storage devices
     dev_initStorageDevices();
@@ -66,8 +68,8 @@ void k_main(){
     
     // Open a test ELF
     int testELFHandle = fs_openFile("/bin/test.");
-    uint8_t* program = (uint8_t*)kmalloc(sizeof(uint8_t) * 8576);
-    int g = fs_readFile(testELFHandle, program, 8576);
+    uint8_t* program = (uint8_t*)kmalloc(sizeof(uint8_t) * 336);
+    int g = fs_readFile(testELFHandle, program, 336);
     if(g < 0){
         switch(testELFHandle){
             case FILE_NOT_FOUND:
@@ -83,10 +85,9 @@ void k_main(){
                 v_terminalWrite("INVALID_IMPL_HANDLE\n");
                 break;
         }
+    }else{
+        proc_loadProgram(program);
     }
-
-    proc_loadProgram(program);
- 
     // Load init program
     v_terminalWrite("[Kernel] Loading T54 init program from \"CD-ROM\"...\n");
     

@@ -12,7 +12,7 @@ nasm -felf32 src/boot.asm -o out/boot.o
 
 # C
 # paging
-$compiler -c src/paging.c -o out/paging.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
+$compiler -c src/paging.c -o out/paging.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32 
 # memory managment
 $compiler -c src/memory.c -o out/memory.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # vga text video
@@ -30,7 +30,7 @@ $compiler -c src/irq.c -o out/irq.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra 
 # panic
 $compiler -c src/panic.c -o out/panic.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 # proc
-$compiler -c src/proc.c -o out/proc.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
+$compiler -c src/proc.c -o out/proc.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32 
 
 
 #
@@ -59,7 +59,7 @@ $compiler -T linker.ld -Wl,-m,elf_i386 -o iso/boot/kernel.bin -ffreestanding -mn
 #
 # Compile programs on disc
 #
-$compiler -static iso/sources/test1.c -o iso/bin/test -m32 -nostdlib -ffreestanding -Wall -Wextra -s -Wl,--gc-sections -Os -ffunction-sections -fdata-sections
+$compiler -static iso/sources/test1.c -o iso/bin/test -m32 -nostdlib -ffreestanding -Wall -Wextra -s
 readelf -l iso/bin/test
 
 #

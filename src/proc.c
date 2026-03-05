@@ -2,29 +2,22 @@
 
 #include "video.h" // DEBUG temp
 
-// proc_loadHeader
-// Just load a program's header
-Proc_ELFHeader proc_loadHeader(uint8_t* program){
-    Proc_ELFHeader header;
-
-    memcpy(program, &header, sizeof(header));
-
-    return header;
-}
 
 // proc_loadProgram
 // Load a program into memory
 void* proc_loadProgram(uint8_t* programData){
     Proc_ELFProgram program;
+    
     // Load header
-    Proc_ELFHeader elfHeader = proc_loadHeader(programData);
-    program.header = elfHeader;
+    memcpy(programData, &(program.header), sizeof(Proc_ELFHeader));
+
     // Let's get the program table location
-    uint32_t programTableLoc = elfHeader.e_phoff;
-    uint32_t programTableEntriesNum = elfHeader.e_phnum;
+    uint32_t programTableLoc = program.header.e_phoff;
+    uint32_t programTableEntriesNum = program.header.e_phnum;
 
     // Generate program table entries
     if(programTableEntriesNum > 0){
+
         program.programTableEntries = kmalloc(sizeof(Proc_ELFProgramTableEntry) * programTableEntriesNum);
         memcpy(programData + programTableLoc, program.programTableEntries, sizeof(Proc_ELFProgramTableEntry) * programTableEntriesNum);
 
@@ -66,12 +59,15 @@ void* proc_loadProgram(uint8_t* programData){
             }
         }
 
-        v_terminalWrite("[Proc] Launching program...\n");
         // Let's jump 
-        uint32_t start = (unsigned long)paging_getPhysicalAddr(program.proccessPage, (void*)(elfHeader.e_entry));
-        paging_loadPageDirectory(program.proccessPage);
+        uint32_t start = (unsigned long)paging_getPhysicalAddr(program.proccessPage, (void*)(program.header.e_entry));
+        //paging_loadPageDirectory(program.proccessPage);
 
-        jumpToUserMode(start, 0x1000000);
+        //void (*func)() = (void*)(program.header.e_entry);
+        //func();
+
+
+        //jumpToUserMode(elfHeader.e_entry, 0);
 
         //paging_loadPageDirectory(&kernelPageProcess);
     }else{

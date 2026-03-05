@@ -3,22 +3,24 @@
 // kmalloc
 // Allocate some chunk of memory 
 void* kmalloc(size_t size){
-    uint16_t startMemory = HEAP_START + kernelPageProcess.lastAddr;
+    Paging_Process* proc = paging_getCurrentlyLoadedProcess();
+
+    uint16_t startMemory = HEAP_START + proc->lastAddr;
     // First, check if we have a freed chunk we could
     // repurpose
     int usingPreviouslyAlloc = -1;
-    for(int i = 0; i < kernelPageProcess.lastFreeChunk; i++){
-        if(kernelPageProcess.freeChunks[i].free == 1 && kernelPageProcess.freeChunks[i].end - kernelPageProcess.freeChunks[i].start >= size){
+    for(int i = 0; i < proc->lastFreeChunk; i++){
+        if(proc->freeChunks[i].free == 1 && proc->freeChunks[i].end - proc->freeChunks[i].start >= size){
             usingPreviouslyAlloc = i;
-            kernelPageProcess.freeChunks[i].free = 0;
-            startMemory = kernelPageProcess.freeChunks[i].start;
+            proc->freeChunks[i].free = 0;
+            startMemory = proc->freeChunks[i].start;
             // Split this chunk of memory, should we need it
-            if(kernelPageProcess.freeChunks[i].end - kernelPageProcess.freeChunks[i].start > size){
+            if(proc->freeChunks[i].end - proc->freeChunks[i].start > size){
                 // bigger than we need
-                struct chunkHeader split = {kernelPageProcess.freeChunks[i].end, kernelPageProcess.freeChunks[i].end + (kernelPageProcess.freeChunks[i].end - kernelPageProcess.freeChunks[i].start - size), 1, kernelPageProcess.lastFreeChunk++};
-                kernelPageProcess.freeChunks[kernelPageProcess.lastFreeChunk] = split;
+                struct chunkHeader split = {proc->freeChunks[i].end, proc->freeChunks[i].end + (proc->freeChunks[i].end - proc->freeChunks[i].start - size), 1, proc->lastFreeChunk++};
+                proc->freeChunks[proc->lastFreeChunk] = split;
                 // Resize the original
-                kernelPageProcess.freeChunks[i].end = startMemory + sizeof(kernelPageProcess.freeChunks[i]) + size;
+                proc->freeChunks[i].end = startMemory + sizeof(proc->freeChunks[i]) + size;
             }
             break;
         }
@@ -28,20 +30,16 @@ void* kmalloc(size_t size){
 }
 
 // kmalloc_loc
-// Allocate memory at a specfic location
+// Allocate memory at a specfic location (assumes kernel page process)
 void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation){
-   return kmalloc_directory(&kernelPageProcess, size, location, prevAllocation); 
+   return kmalloc_directory(paging_getCurrentlyLoadedProcess(), size, location, prevAllocation); 
 }  
 
-#include "video.h"
 
 // kmalloc_directory
 // Allocate memory at a location with a specfic page directory
 void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, int prevAllocation){   
-    // Check if we break the allocation boundry
-    //if(location > (1024 * proc->tableCount)){
-        paging_mapPage(proc, location, paging_allocatePage(), 0x3);
-    //}
+    paging_mapPage(proc, location, paging_allocatePage(), 0x3);
     
     // Convert location
     void* realLocation = paging_getPhysicalAddr(proc, &location);
@@ -72,7 +70,7 @@ void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, in
 // free
 // Free some chunk of memory
 void* free(void* ptr){
-    free_directory(&kernelPageProcess, ptr);
+    free_directory(paging_getCurrentlyLoadedProcess(), ptr);
 }
 
 // free_directory
