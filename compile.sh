@@ -59,7 +59,7 @@ $compiler -T linker.ld -Wl,-m,elf_i386 -o iso/boot/kernel.bin -ffreestanding -mn
 #
 # Compile programs on disc
 #
-$compiler -static iso/sources/test1.c -o iso/bin/test -m32 -nostdlib -ffreestanding -Wall -Wextra -s
+i686-elf-gcc -static iso/sources/test1.c -o iso/bin/test -m32 -nostdlib -ffreestanding -Wall -Wextra -s
 readelf -l iso/bin/test
 
 #
@@ -79,4 +79,4 @@ xorriso -as mkisofs \
     iso
 
 
-qemu-system-x86_64 -drive file=t54.iso,media=cdrom,if=ide -boot d -serial stdio
+qemu-system-x86_64 -drive file=t54.iso,media=cdrom,if=ide -boot d -serial stdio -no-reboot -d int

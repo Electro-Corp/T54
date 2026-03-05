@@ -53,6 +53,7 @@ void v_terminalPushChar(const char c){
 // v_terminalWrite
 // Write a string to the terminal
 void v_terminalWrite(const char* c){
+    io_print(c);
     for(int i = 0; i < strlen(c) - 1; i++){
         if(c[i] == '\n'){
             if(currentRow == HEIGHT - 1) v_terminalScroll();

@@ -68,6 +68,10 @@ Paging_PageDirectory* paging_allocatePageDirectory();
 // Create a new page table
 Paging_PageTable* paging_allocatePageTable();
 
+// paging_allocatePageTableAtAddr
+// Create a new page table at an address
+Paging_PageTable* paging_allocatePageTableAtAddr(void* location);
+
 // paging_mapPage
 // Map a physical page to a virtual adderess
 void paging_mapPage(Paging_Process* proc, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags);

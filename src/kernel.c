@@ -9,6 +9,7 @@
 #include "gdt.h"
 #include "irq.h"
 #include "proc.h"
+#include "io.h"
 #include "fs/fs.h"
 #include "drivers/devices.h"
 
@@ -20,6 +21,7 @@
 int renderRootDeviceSelector();
 
 void k_main(){
+    io_print("T54 Serial Communications initilized.\n");
     v_initTerminal();
     v_terminalWrite("T54 Kernel Version 0.1.1 (Built @ ");
     v_terminalWrite(__TIME__);
@@ -32,22 +34,20 @@ void k_main(){
     gdt_install();
     v_terminalWrite("GDT installed.\n");
 
-    // Initilize paging
-    paging_mapFirst4MB();
-    paging_enablePaging();
-
     // Load IDT
     v_terminalWrite("[Kernel] Loading IDT...");
     idt_install();
     v_terminalWrite("IDT loaded.\n");
-
-    // 0xC0000000
 
     // Init IRQs
     irq_install();
     // Initilize the keyboard
     irq_installHandler(1, keyboard_handleInterrupt);
     __asm__ __volatile__ ("sti"); 
+
+    // Initilize paging
+    paging_mapFirst4MB();
+    paging_enablePaging();
         
     // Initilize storage devices
     dev_initStorageDevices();

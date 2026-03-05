@@ -50,8 +50,23 @@ Paging_PageDirectory* paging_allocatePageDirectory(){
 // paging_allocatePageTable
 // Create a new page table
 Paging_PageTable* paging_allocatePageTable(){
-    Paging_PageTable* table = (Paging_PageTable*)paging_allocatePage();
+    return paging_allocatePageTableAtAddr((void*)paging_allocatePage());
+}
+
+// paging_allocatePageTableAtAddr
+// Create a new page table at an address
+Paging_PageTable* paging_allocatePageTableAtAddr(void* location){
+    Paging_PageTable* table = (Paging_PageTable*)location;
+    io_print("===New table alloc===\n");
     for(int i = 0; i < 1024; i++){
+        char d[6];
+        itoa(i, d);
+        io_print("Filling ");
+        io_print(d);
+        io_print(" at ");
+        itoa(&table, d);
+        io_print(d);
+        io_print("\n");
         table->entries[i] = 0;
     }
     return table;
@@ -67,9 +82,12 @@ void paging_mapPage(Paging_Process* process, uint32_t virtualAddress, uint32_t p
     Paging_PageTable* pageTable;
 
     if(!(process->directory->entries[pageDirectoryIdx] & 1)){
-        v_terminalWrite("[Pager] Allocating new page table\n");
-        pageTable = paging_allocatePageTable();
+        v_terminalWrite("[Pager] Allocating new page table...");
+        void* ptr = paging_getPhysicalAddr(process, (void*)paging_allocatePage());
+        pageTable = paging_allocatePageTableAtAddr(ptr);
+        //pageTable = paging_allocatePageTable();
         process->directory->entries[pageDirectoryIdx] = ((uint32_t) pageTable) | flags | 0x01;
+        v_terminalWrite("done.\n");
     }else{
         pageTable = (Paging_PageTable*)(process->directory->entries[pageDirectoryIdx] & 0xFFFFF000);
     }

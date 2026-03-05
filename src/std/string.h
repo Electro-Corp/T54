@@ -54,19 +54,20 @@ static int strcpy(const char* src, char* dst){
 
 // reverse
 // Reverse a string
-static void reverse(char str[]){
+static char* reverse(char str[]){
 	int i = 0, j = 0;
 	char c = 0;
-	for(int i = 0, j = strlen(str) - 1; i < j; i++, j--){
+	for(i = 0, j = strlen(str) - 1; i < j; i++, j--){
 		c = str[i];
 		str[i] = str[j];
 		str[j] = c;
 	}
+	return str;
 }
 
 // itoa
 // Integer to ASCII string
-static void itoa(int n, char* out){
+static void itoa(int n, char out[]){
 	int i, sign;
 	if((sign = n) < 0){ // Remember sign
 		n = -n; // Make the original num positive
@@ -80,6 +81,6 @@ static void itoa(int n, char* out){
 
 	if(sign < 0) out[i++] = '-';
 	out[i] = '\0';
-	//reverse(out);
+	//out = reverse(out);
 }
 #endif
