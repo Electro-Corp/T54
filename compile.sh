@@ -80,4 +80,4 @@ xorriso -as mkisofs \
     iso
 
 
-qemu-system-x86_64 -drive file=t54.iso,media=cdrom,if=ide -boot d -serial stdio -no-reboot -d int
+qemu-system-x86_64 -drive file=t54.iso,media=cdrom,if=ide -boot d -serial stdio -no-reboot #-d int

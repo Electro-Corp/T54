@@ -54,7 +54,7 @@ static int strcpy(const char* src, char* dst){
 
 // reverse
 // Reverse a string
-static char* reverse(char str[]){
+static void reverse(char str[]){
 	int i = 0, j = 0;
 	char c = 0;
 	for(i = 0, j = strlen(str) - 1; i < j; i++, j--){
@@ -62,7 +62,6 @@ static char* reverse(char str[]){
 		str[i] = str[j];
 		str[j] = c;
 	}
-	return str;
 }
 
 // itoa
@@ -80,7 +79,6 @@ static void itoa(int n, char out[]){
 	} while ((n /= 10) > 0);
 
 	if(sign < 0) out[i++] = '-';
-	out[i] = '\0';
-	//out = reverse(out);
+	out[i++] = '\0';
 }
 #endif

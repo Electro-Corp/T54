@@ -23,9 +23,11 @@ void paging_mapFirst4MB(){
 // paging_allocatePagingProcess
 // Create a new Paging_Process
 Paging_Process* paging_allocatePagingProcess(){
-    Paging_Process* process = (Paging_Process*)paging_allocatePage();
+    v_terminalWrite("[Paging] Allocating new Paging_Process*\n");
+    Paging_Process* process = kmalloc(sizeof(Paging_Process));
     process->directory = paging_allocatePageDirectory();
     process->tables[0] = paging_allocatePageTable();
+    v_terminalWrite("table allocated\n");
 
     //process->directory->entries[0] = ((uint32_t) process->tables[0]) | 3;
     process->directory->entries[0] = ((uint32_t) &kernelFirstTable) | 3;
@@ -37,14 +39,26 @@ Paging_Process* paging_allocatePagingProcess(){
     process->heapExtension = 0;
     process->lastFreeChunk = 0;
 
+    v_terminalWrite("[Paging] New Paging_Process* allocated.\n");
     return process;
 }
 
 // paging_allocatePageDirectory
 // Allocate a new directory for a process
 Paging_PageDirectory* paging_allocatePageDirectory(){
-    Paging_PageDirectory* directory = (Paging_PageDirectory*)paging_allocatePage();
+    Paging_PageDirectory* directory = (Paging_PageDirectory*)kmalloc(sizeof(uint32_t) * 1024);
     for(int i = 0; i < 1024; i++){
+        char d[10];
+        itoa(i, d);
+        io_print("[Directory] Filling ");
+        io_print(d);
+        io_print(" at ");
+        itoa((unsigned long)(directory + (i * sizeof(uint32_t))), d);
+        io_print(d);
+        io_print(" (diff is  ");
+        itoa((unsigned long)((directory + sizeof(Paging_PageDirectory)) - (directory + (i * sizeof(uint32_t)))), d);
+        io_print(d);
+        io_print(")\n");
         directory->entries[i] = 0;
     }
     return directory;
@@ -102,11 +116,13 @@ void paging_mapPage(Paging_Process* process, uint32_t virtualAddress, uint32_t p
 // paging_loadPageDirectory
 // Loads a page directory into memory
 void paging_loadPageDirectory(Paging_Process* proc){
+    // Debug
     v_terminalWrite("[Paging] Loading new directory at ");
     char d[10];
     itoa((unsigned long)proc->directory, d);
     v_terminalWrite(d);
-    v_terminalWrite(".\n");
+    v_terminalWrite("\n");
+    // Actual move
     asm volatile("mov %0, %%cr3" :: "r"(proc->directory)); // page directory into cr3
     currentlyLoadedProcess = proc;
 }
@@ -127,14 +143,17 @@ uint32_t paging_allocatePage(){
         uint32_t id = i / 32, bit = i % 32;
         if(!(memoryFrameBitmap[id] & (1U << bit))){ // This page is free
             memoryFrameBitmap[id] |= (1U << bit);
+            // 
             v_terminalWrite("[Paging] Allocating a page at ");
             char d[6];
             itoa((i * 0x1000) + (uint32_t)&kernelEnd, d);
             v_terminalWrite(d);
             v_terminalWrite(".\n");
+            // 
             return (i * 0x1000) + (uint32_t)&kernelEnd;
         }
     }
+    v_terminalWrite("[Paging] No new page found.\n");
     return 0; // oh no
 }
 
