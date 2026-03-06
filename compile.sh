@@ -1,5 +1,6 @@
 cp iso/boot/kernel.bin ./backup.bin
 rm iso/boot/kernel.bin
+rm out/*.o
 
 compiler=i686-elf-gcc
 

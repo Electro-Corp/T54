@@ -5,14 +5,16 @@
 // paging_mapFirst4MB
 // Map the first 4 megabytes into memory so we can enable paging
 void paging_mapFirst4MB(){
-    kernelPageProcess.directory = paging_allocatePageDirectory();
-    kernelPageProcess.tables[0] = paging_allocatePageTable();
+    v_terminalWrite("[Paging] Mapping first 4MB of the kernel...\n");
+
     for(int i = 0; i < 1024; i++){
-        kernelPageProcess.tables[0]->entries[i] = ((i * 0x1000) | 0x3); // Get the physical address and then set 
+        kernelFirstTable.entries[i] = ((i * 0x1000) | 0x3); // Get the physical address and then set 
     }
 
-    kernelPageProcess.directory->entries[0] = ((uint32_t) kernelPageProcess.tables[0]) | 3;
-    kernelPageProcess.directory->entries[768] = ((uint32_t) kernelPageProcess.tables[0]) | 3;
+    kernelPageProcess.directory = &kernelPageDirectory;
+
+    kernelPageProcess.directory->entries[0] = ((uint32_t) &kernelFirstTable) | 3;
+    kernelPageProcess.directory->entries[768] = ((uint32_t) &kernelFirstTable) | 3;
     kernelPageProcess.directory->entries[1024] = ((uint32_t)(kernelPageProcess.directory)) | 3;
 
     paging_loadPageDirectory(&kernelPageProcess);
@@ -25,7 +27,8 @@ Paging_Process* paging_allocatePagingProcess(){
     process->directory = paging_allocatePageDirectory();
     process->tables[0] = paging_allocatePageTable();
 
-    process->directory->entries[0] = ((uint32_t) process->tables[0]) | 3;
+    //process->directory->entries[0] = ((uint32_t) process->tables[0]) | 3;
+    process->directory->entries[0] = ((uint32_t) &kernelFirstTable) | 3;
 
     process->tableCount = 1;
 
@@ -57,16 +60,16 @@ Paging_PageTable* paging_allocatePageTable(){
 // Create a new page table at an address
 Paging_PageTable* paging_allocatePageTableAtAddr(void* location){
     Paging_PageTable* table = (Paging_PageTable*)location;
-    io_print("===New table alloc===\n");
+    //io_print("===New table alloc===\n");
     for(int i = 0; i < 1024; i++){
-        char d[6];
-        itoa(i, d);
-        io_print("Filling ");
-        io_print(d);
-        io_print(" at ");
-        itoa(&table, d);
-        io_print(d);
-        io_print("\n");
+        // char d[6];
+        // itoa(i, d);
+        // io_print("Filling ");
+        // io_print(d);
+        // io_print(" at ");
+        // itoa((unsigned long)&table, d);
+        // io_print(d);
+        // io_print("\n");
         table->entries[i] = 0;
     }
     return table;
@@ -75,6 +78,7 @@ Paging_PageTable* paging_allocatePageTableAtAddr(void* location){
 // paging_mapPage
 // Map a physical page to a virtual adderess
 void paging_mapPage(Paging_Process* process, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags){
+    v_terminalWrite("[Pager] Map page!\n");
     // Page align the addresses
     uint32_t pageDirectoryIdx = (virtualAddress >> 22) & 0x3FF;
     uint32_t pageTableIdx = (virtualAddress >> 12) & 0x3FF;
@@ -98,8 +102,12 @@ void paging_mapPage(Paging_Process* process, uint32_t virtualAddress, uint32_t p
 // paging_loadPageDirectory
 // Loads a page directory into memory
 void paging_loadPageDirectory(Paging_Process* proc){
+    v_terminalWrite("[Paging] Loading new directory at ");
+    char d[10];
+    itoa((unsigned long)proc->directory, d);
+    v_terminalWrite(d);
+    v_terminalWrite(".\n");
     asm volatile("mov %0, %%cr3" :: "r"(proc->directory)); // page directory into cr3
-
     currentlyLoadedProcess = proc;
 }
 
@@ -115,11 +123,16 @@ void paging_enablePaging(){
 // paging_allocatePage
 // Allocate a page
 uint32_t paging_allocatePage(){
-    for(int i = 0; i < MAX_FRAMES; i++){
+    for(int i = /*(((unsigned long)&kernelEnd) / 4096)*/ 0; i < MAX_FRAMES; i++){
         uint32_t id = i / 32, bit = i % 32;
         if(!(memoryFrameBitmap[id] & (1U << bit))){ // This page is free
             memoryFrameBitmap[id] |= (1U << bit);
-            return (i * 0x1000);
+            v_terminalWrite("[Paging] Allocating a page at ");
+            char d[6];
+            itoa((i * 0x1000) + (uint32_t)&kernelEnd, d);
+            v_terminalWrite(d);
+            v_terminalWrite(".\n");
+            return (i * 0x1000) + (uint32_t)&kernelEnd;
         }
     }
     return 0; // oh no

@@ -17,7 +17,6 @@
 #define INITIAL_FREECHUNK_MAX 256
 
 extern uint32_t kernelEnd; // linker.ld will tell us where our kernel ends, and where we can begin allocation
-
 static uint32_t memoryFrameBitmap[MAX_FRAMES / 8]; // Bitmap (i in byte n tells status of page (n * 8) + i)
 
 typedef struct {
@@ -45,6 +44,9 @@ typedef struct {
     struct chunkHeader freeChunks[INITIAL_FREECHUNK_MAX]; // Current chunks 
     int lastFreeChunk; // Last free chunk we found
 } Paging_Process;
+
+static Paging_PageDirectory kernelPageDirectory __attribute__((aligned(4096)));
+static Paging_PageTable kernelFirstTable __attribute__((aligned(4096)));
 
 // Page directory and table for the kernel
 static Paging_Process kernelPageProcess __attribute__((aligned(4096)));

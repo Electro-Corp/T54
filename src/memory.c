@@ -39,9 +39,12 @@ void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation){
 // kmalloc_directory
 // Allocate memory at a location with a specfic page directory
 void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, int prevAllocation){   
-    paging_mapPage(proc, location, paging_allocatePage(), 0x3);
+    // Is it unmapped?
+    if(paging_getPhysicalAddr(proc, (void*)location) == 0){
+        paging_mapPage(proc, location, paging_allocatePage(), 0x3);
+    }
     // Convert location
-    void* realLocation = paging_getPhysicalAddr(proc, &location);
+    void* realLocation = paging_getPhysicalAddr(proc, (void*)location);
     // Check if we have memory
     if(proc->lastAddr + size > (HEAP_END + proc->heapExtension) && prevAllocation == -1){
         // Check versus the physical memory of the system here

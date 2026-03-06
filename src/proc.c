@@ -55,16 +55,16 @@ void* proc_loadProgram(uint8_t* programData){
                 // Store memory location so we can free later
                 program.programTableEntries[i].loadedLocation = location;
                 // Copy entry data to location
-                memcpy(programData + program.programTableEntries[i].p_offset, program.programTableEntries[i].p_vaddr, program.programTableEntries[i].p_memsz);
+                memcpy(programData + program.programTableEntries[i].p_offset, location, program.programTableEntries[i].p_memsz);
             }
         }
 
         // Let's jump 
-        uint32_t start = (unsigned long)paging_getPhysicalAddr(program.proccessPage, (void*)(program.header.e_entry));
+        //uint32_t start = (unsigned long)paging_getPhysicalAddr(program.proccessPage, (void*)(program.header.e_entry));
         //paging_loadPageDirectory(program.proccessPage);
 
-        ///void (*func)() = (void*)(program.header.e_entry);
-        //func();
+        // void (*func)() = (void*)(program.header.e_entry);
+        // func();
 
 
         //jumpToUserMode(elfHeader.e_entry, 0);
