@@ -14,15 +14,15 @@
 
 // kmalloc
 // Allocate some chunk of memory (assumes current page)
-void* kmalloc(size_t size);
+void* kmalloc(uint32_t size);
 
 // kmalloc_loc
 // Allocate memory at a specfic location (assumes current page)
-void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation);
+void* kmalloc_loc(uint32_t size, uint32_t location, int prevAllocation);
 
 // kmalloc_directory
 // Allocate memory at a location with a specfic Paging_Process
-void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, int prevAllocation);
+void* kmalloc_directory(Paging_Process* proc, uint32_t size, uint32_t location, int prevAllocation);
 
 // free
 // Free some chunk of memory

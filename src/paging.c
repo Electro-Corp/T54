@@ -24,7 +24,7 @@ void paging_mapFirst4MB(){
 // Create a new Paging_Process
 Paging_Process* paging_allocatePagingProcess(){
     v_terminalWrite("[Paging] Allocating new Paging_Process*\n");
-    Paging_Process* process = kmalloc(sizeof(Paging_Process));
+    Paging_Process* process = (Paging_Process*)kmalloc(sizeof(Paging_Process));
     process->directory = paging_allocatePageDirectory();
     process->tables[0] = paging_allocatePageTable();
     v_terminalWrite("table allocated\n");
@@ -46,21 +46,36 @@ Paging_Process* paging_allocatePagingProcess(){
 // paging_allocatePageDirectory
 // Allocate a new directory for a process
 Paging_PageDirectory* paging_allocatePageDirectory(){
-    Paging_PageDirectory* directory = (Paging_PageDirectory*)kmalloc(sizeof(uint32_t) * 1024);
+    Paging_PageDirectory* directory = (Paging_PageDirectory*)kmalloc(sizeof(Paging_PageDirectory));
     for(int i = 0; i < 1024; i++){
+        //
+        // DEBUG INFO
+        //
+        unsigned long currentLocation = (unsigned long)(directory->entries + i);
+        // 
         char d[10];
         itoa(i, d);
         io_print("[Directory] Filling ");
         io_print(d);
         io_print(" at ");
-        itoa((unsigned long)(directory + (i * sizeof(uint32_t))), d);
+        itoa(currentLocation, d);
         io_print(d);
-        io_print(" (diff is  ");
-        itoa((unsigned long)((directory + sizeof(Paging_PageDirectory)) - (directory + (i * sizeof(uint32_t)))), d);
+        io_print(" (diff is ");
+        unsigned long diff = ((unsigned long) directory + sizeof(Paging_PageDirectory)) - currentLocation;
+        itoa(diff, d);
         io_print(d);
+        if(paging_getPhysicalAddr(paging_getCurrentlyLoadedProcess(), (void*)(directory->entries + i + 1)) == 0){
+            io_print(" and we ARE NOT paged");
+        }else{
+            io_print(" and we ARE paged");
+        }
         io_print(")\n");
-        directory->entries[i] = 0;
+        //
+        // END DEBUG INFO
+        //
+        *(directory->entries + i) = 0;
     }
+    io_print("Finished.\n");
     return directory;
 }
 
@@ -74,16 +89,7 @@ Paging_PageTable* paging_allocatePageTable(){
 // Create a new page table at an address
 Paging_PageTable* paging_allocatePageTableAtAddr(void* location){
     Paging_PageTable* table = (Paging_PageTable*)location;
-    //io_print("===New table alloc===\n");
     for(int i = 0; i < 1024; i++){
-        // char d[6];
-        // itoa(i, d);
-        // io_print("Filling ");
-        // io_print(d);
-        // io_print(" at ");
-        // itoa((unsigned long)&table, d);
-        // io_print(d);
-        // io_print("\n");
         table->entries[i] = 0;
     }
     return table;
@@ -92,7 +98,6 @@ Paging_PageTable* paging_allocatePageTableAtAddr(void* location){
 // paging_mapPage
 // Map a physical page to a virtual adderess
 void paging_mapPage(Paging_Process* process, uint32_t virtualAddress, uint32_t physicalAddress, uint32_t flags){
-    v_terminalWrite("[Pager] Map page!\n");
     // Page align the addresses
     uint32_t pageDirectoryIdx = (virtualAddress >> 22) & 0x3FF;
     uint32_t pageTableIdx = (virtualAddress >> 12) & 0x3FF;
@@ -159,7 +164,7 @@ uint32_t paging_allocatePage(){
 
 // paging_getPhysicalAddr
 // Get the physical address of a virtual address
-void* paging_getPhysicalAddr(Paging_Process* process, void *virtualAddr){
+void* paging_getPhysicalAddr(Paging_Process* process, void* virtualAddr){
     // Page align the addresses
     uint32_t pageDirectoryIdx = ((unsigned long)virtualAddr >> 22) & 0x3FF;
     uint32_t pageTableIdx = ((unsigned long)virtualAddr >> 12) & 0x3FF;

@@ -66,7 +66,7 @@ static void reverse(char str[]){
 
 // itoa
 // Integer to ASCII string
-static void itoa(int n, char out[]){
+static void itoa(long n, char out[]){
 	int i, sign;
 	if((sign = n) < 0){ // Remember sign
 		n = -n; // Make the original num positive

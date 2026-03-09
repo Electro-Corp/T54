@@ -2,7 +2,7 @@
 
 // kmalloc
 // Allocate some chunk of memory 
-void* kmalloc(size_t size){
+void* kmalloc(uint32_t size){
     Paging_Process* proc = paging_getCurrentlyLoadedProcess();
 
     uint16_t startMemory = HEAP_START + proc->lastAddr;
@@ -31,26 +31,27 @@ void* kmalloc(size_t size){
 
 // kmalloc_loc
 // Allocate memory at a specfic location (assumes kernel page process)
-void* kmalloc_loc(size_t size, uint32_t location, int prevAllocation){
+void* kmalloc_loc(uint32_t size, uint32_t location, int prevAllocation){
    return kmalloc_directory(paging_getCurrentlyLoadedProcess(), size, location, prevAllocation); 
 }  
 
 #include "std/string.h"
+#include "video.h"
 
 // kmalloc_directory
 // Allocate memory at a location with a specfic page directory
-void* kmalloc_directory(Paging_Process* proc, size_t size, uint32_t location, int prevAllocation){   
+void* kmalloc_directory(Paging_Process* proc, uint32_t size, uint32_t location, int prevAllocation){   
     char g[10];
-    itoa((unsigned long)paging_getPhysicalAddr(proc, (void*)(location + size)), g);
-    v_terminalWrite("[kmalloc] New allocation, physical will be: ");
+    itoa((unsigned long)paging_getPhysicalAddr(proc, (void*)(location + size) + sizeof(struct chunkHeader)), g);
+    v_terminalWrite("[kmalloc] New allocation, physical max will be: ");
     v_terminalWrite(g);
     v_terminalWrite("\n");
 
     // Is it unmapped?
-    if(paging_getPhysicalAddr(proc, (void*)(location + size)) == 0){
+    if(paging_getPhysicalAddr(proc, (void*)(location + size + sizeof(struct chunkHeader))) == 0){
         v_terminalWrite("[kmalloc] Phys addr doesn't exist, mapping new page.\n");
         for(int i = 0; i < size / 1024; i++){
-            paging_mapPage(proc, location, paging_allocatePage(), 0x3);
+            paging_mapPage(proc, location + (1024 * i), paging_allocatePage(), 0x3);
         }
     }
     // Convert location

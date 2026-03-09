@@ -92,7 +92,7 @@ uint32_t paging_allocatePage();
 
 // paging_getPhysicalAddr
 // Get the physical address of a virtual address
-void* paging_getPhysicalAddr(Paging_Process* proc, void *virtualAddr);
+void* paging_getPhysicalAddr(Paging_Process* proc, void* virtualAddr);
 
 // paging_getCurrentlyLoadedProcess
 // Get the current loaded process in cr3
